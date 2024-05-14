@@ -2,19 +2,27 @@
     z-index: 10;
     align-content: center;
 }
-  
+
+.square.beige {
+    background-color: rgb(236, 207, 169);
+}
+
 .square.brown {
     background-color: rgb(65, 25, 25);
 }
 
-.square.beige {
-    background-color: rgb(236, 207, 169);
+.square.beige:hover {
+    background-color: rgb(245, 231, 212);
 }
 
 .square.brown:hover {
     background-color: rgb(100, 48, 48);
 }
 
-.square.beige:hover {
-    background-color: rgb(245, 231, 212);
+.square.beige.hovering {
+    background-color: gray;
+}
+
+.square.brown.hovering {
+    background-color: gray;
 }
