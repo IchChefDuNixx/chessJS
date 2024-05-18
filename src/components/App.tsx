@@ -1,4 +1,5 @@
 import Board from './Board';
+import NavBar from './NavBar';
 import './App.css';
 
 
@@ -19,6 +20,7 @@ function App() {
 
   return(
     <>
+      <NavBar />
       <Board initialBoard={initialBoard} />
     </>
   );
