@@ -1,4 +1,5 @@
 import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, FaChessPawn } from "react-icons/fa";
+import { Tooltip, Zoom } from "@mui/material";
 import "./Piece.css";
 
 
@@ -32,11 +33,29 @@ function getIcon(type: string) {
 function Piece({ type } : Props) {
     const icon = getIcon(type);
 
-    return(
-        <div className="piece" data-type={type} draggable >
-            { icon }
-        </div>
-    );
+    // TODO: add user-specific setting
+    let show_tooltips: boolean = true;
+    if (show_tooltips) {
+        return(
+            <Tooltip
+                title={type}
+                arrow
+                disableInteractive
+                TransitionComponent={Zoom}
+                enterDelay={1000}
+                >
+                <div className="piece" data-type={type} draggable >
+                    { icon }
+                </div>
+            </Tooltip>
+        );
+    } else {
+        return(
+            <div className="piece" data-type={type} draggable >
+                { icon }
+            </div>
+        );
+    }
 }
 
 
