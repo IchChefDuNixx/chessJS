@@ -11,6 +11,7 @@ interface Props {
 
 function Board({ initialBoard } : Props) {
     const [board, setBoard] = useState(initialBoard);
+    const [reversed, setReversed] = useState(false);
 
     const handleMove = (start: number, end: number) => {
         // the move has to be checked by our chess model
@@ -43,10 +44,17 @@ function Board({ initialBoard } : Props) {
         );
     };
 
+    const renderedBoard = board.map((piece, position) => renderSquare(piece, position));
+
     return(
-        <div className="board" >
-            { board.map((piece, position) => renderSquare(piece, position)) }
-        </div>
+        <>
+            <div className="board" >
+                { reversed ? renderedBoard.reverse() : renderedBoard }
+            </div>
+            <div>
+                <button onClick={() => setReversed(!reversed)} > Reverse Board </button>
+            </div>
+        </>
     );
 }
 
