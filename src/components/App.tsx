@@ -1,5 +1,8 @@
 import Board from './Board';
 import NavBar from './NavBar';
+import StartMenu from './StartMenu';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
 import './App.css';
 
 
@@ -16,15 +19,36 @@ const initialBoard = [
 ];
 
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: (
+      <StartMenu/>
+    )
+  },
+  {
+    path: '/play',
+    element: (
+      <>
+        <NavBar />
+        <Board initialBoard={initialBoard} />
+      </>
+    )
+  }
+]);
+
+// function App() {
+
+//   return(
+//     <>
+//       <NavBar />
+//       <Board initialBoard={initialBoard} />
+//     </>
+//   );
+// }
+
 function App() {
-
-  return(
-    <>
-      <NavBar />
-      <Board initialBoard={initialBoard} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
-
 
 export default App;
