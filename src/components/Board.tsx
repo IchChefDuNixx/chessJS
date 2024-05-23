@@ -3,13 +3,18 @@ import Square from "./Square";
 import Piece from "./Piece";
 import "./Board.css";
 
+const initialBoard = [
+  "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
+  "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
+  "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "",
+  "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
+  "rook_w", "knight_w", "bishop_w", "king_w", "queen_w", "bishop_w", "knight_w", "rook_w"
+];
 
-interface Props {
-    initialBoard: string[]
-}
-
-
-function Board({ initialBoard } : Props) {
+function Board() {
     const [board, setBoard] = useState(initialBoard);
     const [reversed, setReversed] = useState(false);
 
@@ -25,7 +30,7 @@ function Board({ initialBoard } : Props) {
     const renderSquare = (piece: string, position: number) => {
         // determine square color
         const row = Math.floor(position / 8);
-        let black : boolean;
+        let black: boolean;
 
         if (row % 2 === 0)
             black = (position % 2 === 0) ? true : false;
@@ -57,6 +62,5 @@ function Board({ initialBoard } : Props) {
         </>
     );
 }
-
 
 export default Board;
