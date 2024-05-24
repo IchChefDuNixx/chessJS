@@ -2,88 +2,9 @@ import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, F
 import { Tooltip, Zoom } from "@mui/material";
 import "./Piece.css";
 
-export type PieceType = 'Pawn' | 'Knight' | 'Bishop' | 'Rook' | 'King' | 'Queen';
-export type PieceColor = 'white' | 'black';
-
-
 interface Props {
     type: string
 }
-
-
-interface PieceProps {
-    type: PieceType;
-    color: PieceColor;
-    position: number;
-}
-
-export class Pieces {
-    type: PieceType;
-    color: PieceColor;
-    position: number;
-
-    constructor(props: PieceProps) {
-        this.type = props.type;
-        this.color = props.color;
-        this.position = props.position;
-    }
-}
-
-export class Pawn extends Pieces {
-    hasMoved: boolean;
-
-    constructor(props: PieceProps) {
-        super(props);
-        this.hasMoved = false;
-    }
-
-    public setHasMoved = () => {
-        this.hasMoved = true;
-    }
-}
-
-export class Knight extends Pieces {
-    constructor(props: PieceProps) {
-        super(props);
-    }
-}
-
-export class Bishop extends Pieces {
-    constructor(props: PieceProps) {
-        super(props);
-    }
-}
-
-export class Rook extends Pieces {
-    hasMoved: boolean;
-    constructor(props: PieceProps) {
-        super(props);
-        this.hasMoved = false;
-    }
-    public setHasMoved = () => {
-        this.hasMoved = true;
-    }
-}
-
-export class King extends Pieces {
-    hasMoved: boolean;
-
-    constructor(props: PieceProps) {
-        super(props);
-        this.hasMoved = false;
-    }
-
-    public setHasMoved = () => {
-        this.hasMoved = true;
-    }
-}
-
-export class Queen extends Pieces {
-    constructor(props: PieceProps) {
-        super(props);
-    }
-}
-
 
 // this could be a lot nicer I guess
 function getIcon(type: string) {

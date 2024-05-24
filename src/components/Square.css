@@ -8,15 +8,15 @@
 }
 
 .square.brown {
-    background-color: rgb(65, 25, 25);
+    background-color: #216f7d;
 }
 
 .square.beige:hover {
-    background-color: rgb(245, 231, 212);
+    background-color: rgb(205, 193, 178);
 }
 
 .square.brown:hover {
-    background-color: rgb(100, 48, 48);
+    background-color: #135560
 }
 
 .square.beige.hovering {
