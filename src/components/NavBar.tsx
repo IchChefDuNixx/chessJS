@@ -2,8 +2,7 @@ import React from 'react';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
-
-import ProfileDrawer from './ProfileDrawer';
+import ProfileDrawer from './ProfileDashboard';
 import './NavBar.css';
 
 // see https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
@@ -36,10 +35,10 @@ function NavBar() {
           {/* Default Toolbar/Buttons for wide enough windows */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button key="Home" onClick={handleClickHome} color='inherit'>
-              Home
+            <Typography>Home</Typography>
             </Button>
             <Button key="Settings" onClick={handleClickSettings} color='inherit'>
-              Settings
+            <Typography>Settings</Typography>
             </Button>
           </Box>
 
@@ -64,7 +63,7 @@ function NavBar() {
             </Menu>
           </Box>
 
-          {/* Moved profile related stuff to new component */}
+          {/* Moved profile-related stuff to new component */}
           <ProfileDrawer />
 
         </Toolbar>
