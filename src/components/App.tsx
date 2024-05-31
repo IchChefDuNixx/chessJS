@@ -1,5 +1,6 @@
 import Board from './Board';
 import NavBar from './NavBar';
+import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
@@ -19,6 +20,12 @@ const router = createBrowserRouter([
         <NavBar />
         <Board />
       </>
+    )
+  },
+  {
+    path: '/settings',
+    element: (
+      <SettingsMenu/>
     )
   }
 ]);
