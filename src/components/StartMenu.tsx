@@ -9,7 +9,7 @@ function StartMenu() {
 
     const [text, setText] = useState("Click me!");
     const test_server_connection = async function() {
-        let response = await axios.get("/message");
+        let response = await axios.get("/hello");
         console.log(response);
         let new_text = response.data;
         console.log(new_text);
