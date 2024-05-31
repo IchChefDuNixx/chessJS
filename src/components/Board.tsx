@@ -2,8 +2,9 @@ import { useState } from "react";
 import Square from "./Square";
 import Piece from "./Piece";
 import "./Board.css";
+import axios from "axios";
 
-const initialBoard = [
+const initialBoard: string[] = [
   "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
   "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
   "", "", "", "", "", "", "", "",
@@ -15,7 +16,7 @@ const initialBoard = [
 ];
 
 // Not sure if this belongs here but we might need it for proper movement logic
-const alphanumericBoard = [
+const alphanumericBoard: string[] = [
 'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8', 
 'a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7', 
 'a6', 'b6', 'c6', 'd6', 'e6', 'f6', 'g6', 'h6', 
@@ -30,13 +31,24 @@ function Board() {
     const [board, setBoard] = useState(initialBoard);
     const [reversed, setReversed] = useState(false);
 
-    const handleMove = (start: number, end: number) => {
+    const handleMove = (start: number, end: number): void => {
         // the move has to be checked by our chess model
-        const newBoard = [...board];
-        const movedPiece = newBoard[start];
-        newBoard[start] = "";
-        newBoard[end] = movedPiece;
-        setBoard(newBoard);
+        const execute_move = (): void => {
+            const newBoard = [...board];
+            const movedPiece = newBoard[start];
+            newBoard[start] = "";
+            newBoard[end] = movedPiece;
+            setBoard(newBoard);
+        }
+
+        axios.get("/validate_move", {}) // add params for checking in this object
+            .then((response) => {
+                let is_valid_move: boolean = response.data;
+                if (is_valid_move) execute_move();
+            })
+            .catch((error) => {
+                console.log("Something went wrong");
+            });
     };
 
     const renderSquare = (piece: string, position: number) => {
