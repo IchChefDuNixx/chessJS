@@ -1,4 +1,5 @@
 import express from "express";
+import { Request, Response } from "express";
 import ViteExpress from "vite-express";
 
 // console logs in here end up in the terminal hosting the server, not the browser
@@ -6,14 +7,13 @@ import ViteExpress from "vite-express";
 const app = express();
 app.use(express.json()); // never forget
 
-// TODO: typescriptify request and response types. I was unable to do that.
 
 // this is a test to see if the server is alive
-app.get("/hello", (_, res): void => {
+app.get("/hello", (req: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
-app.get("/validate_move", (req, res): void => {
+app.get("/validate_move", (req: Request, res: Response): void => {
     // TODO: import and call game logic function
     // TODO: send response with value true/false
 
@@ -21,7 +21,7 @@ app.get("/validate_move", (req, res): void => {
     res.send(true);
 });
 
-app.get("/user_profile", (req, res): void => {
+app.get("/user_profile", (req: Request, res: Response): void => {
     // TODO: import and call database adapter
     // TODO: send json response with all profile data
 
@@ -49,7 +49,7 @@ app.get("/user_profile", (req, res): void => {
 });
 
 
-app.get("/user_settings", (req, res): void => {
+app.get("/user_settings", (req: Request, res: Response): void => {
     // TODO: import and call databse adapter
     // TODO: send json response with all user settings
     
@@ -57,7 +57,7 @@ app.get("/user_settings", (req, res): void => {
     res.json({"a": true, "b": true, "c": false, "d": 123})
 })
 
-app.post("/user_settings", (req, res): void => {
+app.post("/user_settings", (req: Request, res: Response): void => {
     // TODO: import and call database adapter
     // TOOD: parse request and store new setting values
     // TODO: send confirmation response when done
