@@ -17,7 +17,7 @@ function ProfileDashboard() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [profileData, setProfileData] = React.useState({
     username: "",
-    date_registered: "",
+    registered: "",
     profile_picture: null,
     play_history: [{id: 0, timestamp: "-", opponent: "-", victory: false}]
   });
@@ -32,8 +32,9 @@ function ProfileDashboard() {
   };
 
   // initialize values at mount
+  // TODO: Make User dynamic
   React.useEffect(() => {
-    axios.get("/api/user_profile").then(response => {
+    axios.get("/api/user/profile/1").then(response => {
       const data = response.data;
       setProfileData(data);
 
@@ -63,7 +64,7 @@ function ProfileDashboard() {
         <List>
           <ListItem disablePadding>
             <ListItemText inset primary={
-              "Registered: " + new Date(profileData.date_registered).toLocaleDateString()
+              "Registered: " + new Date(profileData.registered).toLocaleDateString()
             }/>
           </ListItem>
           <ListItem disablePadding>

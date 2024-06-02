@@ -24,6 +24,12 @@ function StartMenu() {
             <button onClick={test_server_connection}>
                 {text}
             </button>
+            <button onClick={() => navigate('/user/new')}>
+                Create new User
+            </button>      
+            <button onClick={() => navigate('/game/new')}>
+                Create new Game
+            </button>  
         </div>
     );
 }
