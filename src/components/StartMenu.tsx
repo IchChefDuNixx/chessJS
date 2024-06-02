@@ -9,7 +9,7 @@ function StartMenu() {
 
     const [text, setText] = useState("Click me!");
     const test_server_connection = async function() {
-        let response = await axios.get("/message");
+        let response = await axios.get("/api/hello");
         console.log(response);
         let new_text = response.data;
         console.log(new_text);
@@ -24,6 +24,12 @@ function StartMenu() {
             <button onClick={test_server_connection}>
                 {text}
             </button>
+            <button onClick={() => navigate('/user/new')}>
+                Create new User
+            </button>      
+            <button onClick={() => navigate('/game/new')}>
+                Create new Game
+            </button>  
         </div>
     );
 }
@@ -162,7 +168,3 @@ function StartMenu() {
 }
 
 export default StartMenu;
-function value(v: any, string: any) {
-    throw new Error('Function not implemented.');
-}
-

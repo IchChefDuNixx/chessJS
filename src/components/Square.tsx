@@ -1,7 +1,13 @@
 import React from "react";
 import { PropsWithChildren } from "react";
 import "./Square.css";
+import axios from "axios";
 
+// only used for touch "click" inputs
+let first: HTMLElement | null = null;
+let second: HTMLElement | null = null;
+// to remember the square we started dragging from
+let holding: EventTarget & Element | null = null;
 
 interface Props {
     black: boolean,
@@ -12,52 +18,94 @@ interface Props {
 
 function Square({ black, position, handleMove, children } : PropsWithChildren<Props>) {
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (e: React.MouseEvent): void => {
+        if (holding) holding.classList.remove("holding"); // clears old stuck class
         if (e.button === 0) {
-            e.currentTarget.classList.add("hovering");
+            let target = e.target as HTMLElement;
+            if (target.classList.contains("piece")) {
+                holding = e.currentTarget;
+                holding.classList.add("holding");
+                holding.classList.add("hovering");
+            }
         } else if (e.button === 1) { // prevents "hovering" from sticking in edge-cases
             e.currentTarget.classList.remove("hovering");
         }
     }
 
-    const handleMouseUp = (e: React.MouseEvent) => {
+    const handleMouseUp = (e: React.MouseEvent): void => {
+        if (holding) holding.classList.remove("holding");
         e.currentTarget.classList.remove("hovering");
     }
 
-    const handleOnMouseLeave = (e: React.MouseEvent) => {
+    const handleOnMouseLeave = (e: React.MouseEvent): void => {
         e.currentTarget.classList.remove("hovering");
     }
 
-    const handleDoubleClick = (e: React.MouseEvent) => {
+    const handleDoubleClick = (e: React.MouseEvent): void => {
         // TODO: find and highlight all valid positions of current piece
+        // this might break touch dragging functionality, which currently relies on a double click
+        // axios.get("/api/???").then().catch();
         console.log("clickety-click!");
         console.log(e.currentTarget);
     }
 
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
+        // cleanup touch remains, this is the earliest possible point, for my surface at least
+        if (first) {
+            first.classList.remove("selected");
+            first = null;
+        }
+
         const startSquare = e.currentTarget;
-        const startPosition = startSquare.getAttribute("data-position");
+        const startPosition: string|null = startSquare.getAttribute("data-position");
         // startPosition should never be null, but just in case
         if (startPosition)
             e.dataTransfer.setData("startPosition", startPosition);
     };
 
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
         e.currentTarget.classList.add("hovering");
         e.preventDefault(); // enable drop
     };
 
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
         e.currentTarget.classList.remove("hovering");
-    }
+    };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+        if (holding) holding.classList.remove("holding");
         e.currentTarget.classList.remove("hovering");
-        const startPosition = e.dataTransfer.getData("startPosition");
-        const endPosition = e.currentTarget.getAttribute("data-position");
+        const startPosition: string = e.dataTransfer.getData("startPosition");
+        const endPosition: string|null = e.currentTarget.getAttribute("data-position");
         // endPosition should never be null, but just in case
-        if (endPosition)
+        if (endPosition && (startPosition != endPosition))
             handleMove(+startPosition, +endPosition);
+    };
+
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
+        let target = e.touches[0].target as HTMLElement;
+        // ignore inputs on empty squares
+        if (target.classList.contains("piece")) {
+            if (!first) {
+                first = target.parentNode as HTMLElement;
+                first.classList.add("selected");
+            } else if (target == first) {
+                first.classList.remove("selected");
+                first = null;
+            } else {
+                second = target.parentNode as HTMLElement;
+
+                let startPosition = first.getAttribute("data-position");
+                let endPosition = second.getAttribute("data-position");
+                // should never be null but TypeScript like this
+                if (startPosition && endPosition)
+                    handleMove(+startPosition, +endPosition);
+
+                first.classList.remove("selected");
+                second.classList.remove("seleceted");
+                first = second = null;
+            }
+        }
     };
 
     return(
@@ -72,11 +120,11 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
             onDragOver={e => handleDragOver(e)}
             onDragLeave={e => handleDragLeave(e)}
             onDrop={e => handleDrop(e)}
+            onTouchStart={e => handleTouchStart(e)}
         >
             { children }
         </div>
     );
 }
-
 
 export default Square;

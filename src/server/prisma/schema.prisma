@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                Int           @id @default(autoincrement())
+  username          String        @unique
+  registered        DateTime      @default(now())
+  profile_picture   String?
+  GameAsPlayer1     Game[]        @relation(name: "player_1")
+  GameAsPlayer2     Game[]        @relation(name: "player_2")
+  settings          Settings?
+}
+
+model Game {
+  id          Int       @id @default(autoincrement())
+  timestamp   DateTime  @default(now())
+  player_1    User      @relation(name: "player_1", fields: [player1Id], references: [id])
+  player_2    User      @relation(name: "player_2", fields: [player2Id], references: [id])
+  player1Id   Int
+  player2Id   Int
+  winnerID    Int
+}
+
+model Settings {
+  id    Int       @id
+  user  User      @relation(fields: [id], references: [id])
+  a     Boolean   @default(true)
+  b     Boolean   @default(true)
+  c     Boolean   @default(false)
+  d     String    @default("")
+}
