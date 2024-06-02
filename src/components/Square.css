@@ -19,6 +19,14 @@
     background-color: #135560
 }
 
+.square.beige.holding {
+    background-color: yellowgreen;
+}
+
+.square.brown.holding {
+    background-color: yellowgreen;
+}
+
 .square.beige.hovering {
     background-color: gray;
 }

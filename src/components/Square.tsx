@@ -6,6 +6,8 @@ import axios from "axios";
 // only used for touch "click" inputs
 let first: HTMLElement | null = null;
 let second: HTMLElement | null = null;
+// to remember the square we started dragging from
+let holding: EventTarget & Element | null = null;
 
 interface Props {
     black: boolean,
@@ -17,14 +19,21 @@ interface Props {
 function Square({ black, position, handleMove, children } : PropsWithChildren<Props>) {
 
     const handleMouseDown = (e: React.MouseEvent): void => {
+        if (holding) holding.classList.remove("holding"); // clears old stuck class
         if (e.button === 0) {
-            e.currentTarget.classList.add("hovering");
+            let target = e.target as HTMLElement;
+            if (target.classList.contains("piece")) {
+                holding = e.currentTarget;
+                holding.classList.add("holding");
+                holding.classList.add("hovering");
+            }
         } else if (e.button === 1) { // prevents "hovering" from sticking in edge-cases
             e.currentTarget.classList.remove("hovering");
         }
     }
 
     const handleMouseUp = (e: React.MouseEvent): void => {
+        if (holding) holding.classList.remove("holding");
         e.currentTarget.classList.remove("hovering");
     }
 
@@ -35,7 +44,7 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
     const handleDoubleClick = (e: React.MouseEvent): void => {
         // TODO: find and highlight all valid positions of current piece
         // this might break touch dragging functionality, which currently relies on a double click
-        // axios.get().then().catch();
+        // axios.get("/api/???").then().catch();
         console.log("clickety-click!");
         console.log(e.currentTarget);
     }
@@ -64,6 +73,7 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+        if (holding) holding.classList.remove("holding");
         e.currentTarget.classList.remove("hovering");
         const startPosition: string = e.dataTransfer.getData("startPosition");
         const endPosition: string|null = e.currentTarget.getAttribute("data-position");
@@ -98,20 +108,6 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
         }
     };
 
-    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>): void => {
-        // e.preventDefault();
-    };
-
-    const handleTouchCancel = (e: React.TouchEvent<HTMLDivElement>): void => {
-        // e.preventDefault();
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>): void => {
-        // e.preventDefault();
-        // console.log(e);
-        // handleMove(50, 42)
-    }
-
     return(
         <div
             className={`square ${black ? "brown" : "beige"}`}
@@ -125,9 +121,6 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
             onDragLeave={e => handleDragLeave(e)}
             onDrop={e => handleDrop(e)}
             onTouchStart={e => handleTouchStart(e)}
-            onTouchMove={e => handleTouchMove(e)}
-            onTouchCancel={e => handleTouchCancel(e)}
-            onTouchEnd={e => handleTouchEnd(e)}
         >
             { children }
         </div>
