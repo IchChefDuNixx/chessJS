@@ -20,7 +20,11 @@ function NavBar() {
   };
 
   const handleClickHome = (): void => {
-    navigate('/');
+    navigate('/home');
+  }
+
+  const handleClickPlay = (): void => {
+    navigate("/play");
   }
 
   const handleClickSettings = (): void => {
@@ -35,10 +39,13 @@ function NavBar() {
           {/* Default Toolbar/Buttons for wide enough windows */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button key="Home" onClick={handleClickHome} color='inherit'>
-            <Typography>Home</Typography>
+              <Typography>Home</Typography>
+            </Button>
+            <Button key="Play" onClick={handleClickPlay} color='inherit'>
+              <Typography>Play</Typography>
             </Button>
             <Button key="Settings" onClick={handleClickSettings} color='inherit'>
-            <Typography>Settings</Typography>
+              <Typography>Settings</Typography>
             </Button>
           </Box>
 
@@ -56,6 +63,9 @@ function NavBar() {
             >
               <MenuItem key="Home" onClick={handleClickHome}>
                 <Typography>Home</Typography>
+              </MenuItem>
+              <MenuItem key="Play" onClick={handleClickPlay}>
+                <Typography>Play</Typography>
               </MenuItem>
               <MenuItem key="Settings" onClick={handleClickSettings}>
                 <Typography>Settings</Typography>

@@ -10,7 +10,19 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <StartMenu/>
+      <>
+        <NavBar />
+        <StartMenu/>
+      </>
+    )
+  },
+  { // this is stupid but works
+    path: '/home',
+    element: (
+      <>
+        <NavBar />
+        <StartMenu/>
+      </>
     )
   },
   {
@@ -25,7 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/settings',
     element: (
-      <SettingsMenu/>
+      <>
+        <NavBar />
+        <SettingsMenu/>
+      </>
     )
   }
 ]);
