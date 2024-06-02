@@ -1,0 +1,65 @@
+/* StartMenu.css */
+
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: repeat(5, 160px);
+    grid-template-rows: repeat(5, 160px);
+    gap: 10px; /* Adjust gap between grid items if needed */
+    height: 800px;
+    width: 800px;
+    background-size: cover;
+    background-position: center;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .grid-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #933e3ee6;
+    background-color: #262d27e6;
+    box-shadow: 0 4px 8px #216f7d;
+    border-radius: 10px;
+  }
+  
+  .logo {
+    max-width: 80%;
+    max-height: 80%;
+  }
+  
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  button {
+    background-color: #216f7d;
+    color: white;
+    padding: 10px 20px; /* Smaller button size */
+    margin: 10px;       /* Adjusted margin */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;    /* Smaller font size */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #eccfa9;
+  }
+  
+  .title {
+    color: #af3939;
+    font-size: 2rem;  /* Adjusted title size */
+    margin-bottom: 1rem; /* Adjusted margin */
+  }
+  
