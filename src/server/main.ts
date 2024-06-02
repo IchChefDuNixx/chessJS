@@ -23,8 +23,8 @@ app.get("/api/validate_move", (req: Request, res: Response): void => {
     res.send(true);
 });
 
-app.use("api/user", userRouter);
-app.use("api/games", gameRouter);
+app.use("/api/user", userRouter);
+app.use("/api/games", gameRouter);
 
 // after defining the API, start the server
 ViteExpress.listen(app, 5173, () => {
