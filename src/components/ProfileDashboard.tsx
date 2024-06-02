@@ -33,7 +33,7 @@ function ProfileDashboard() {
 
   // initialize values at mount
   React.useEffect(() => {
-    axios.get("/user_profile").then(response => {
+    axios.get("/api/user_profile").then(response => {
       const data = response.data;
       setProfileData(data);
 

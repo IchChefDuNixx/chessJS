@@ -15,7 +15,7 @@ function SettingsMenu() {
 
   // initialize values at mount
   React.useEffect(() => {
-    axios.get("/user_settings").then(response => {
+    axios.get("/api/user_settings").then(response => {
       const data = response.data;
       setSettings(data);
     });
@@ -25,14 +25,14 @@ function SettingsMenu() {
     setSettings({...settings, [setting]: event.target.checked});
     handleSubmit();
   };
-  
+
   const handleRadioChange = (event:ChangeEvent<HTMLInputElement>): void => {
     setSettings({...settings, ["d"]: event.target.value});
     handleSubmit();
   };
 
   const handleSubmit = (): void => {
-    axios.post('/user_settings', settings)
+    axios.post('/api/user_settings', settings)
      .then(response => {
         if (response.request.response as boolean) {
           console.log('Settings updated successfully!');
@@ -44,11 +44,11 @@ function SettingsMenu() {
         console.error(error);
       });
   };
-  
+
   const navigate = useNavigate();
 
   const handleClickHome = (): void => {
-    navigate('/');
+    navigate('/home');
   }
 
   return(

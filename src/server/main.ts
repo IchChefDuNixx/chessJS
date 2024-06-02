@@ -9,11 +9,11 @@ app.use(express.json()); // never forget
 
 
 // this is a test to see if the server is alive
-app.get("/hello", (req: Request, res: Response): void => {
+app.get("/api/hello", (req: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
-app.get("/validate_move", (req: Request, res: Response): void => {
+app.get("/api/validate_move", (req: Request, res: Response): void => {
     // TODO: import and call game logic function
     // TODO: send response with value true/false
 
@@ -21,7 +21,7 @@ app.get("/validate_move", (req: Request, res: Response): void => {
     res.send(true);
 });
 
-app.get("/user_profile", (req: Request, res: Response): void => {
+app.get("/api/user_profile", (req: Request, res: Response): void => {
     // TODO: import and call database adapter
     // TODO: send json response with all profile data
 
@@ -48,16 +48,15 @@ app.get("/user_profile", (req: Request, res: Response): void => {
     ]});
 });
 
-
-app.get("/user_settings", (req: Request, res: Response): void => {
+app.get("/api/user_settings", (req: Request, res: Response): void => {
     // TODO: import and call databse adapter
     // TODO: send json response with all user settings
     
     // mock
     res.json({"a": true, "b": true, "c": false, "d": 123})
-})
+});
 
-app.post("/user_settings", (req: Request, res: Response): void => {
+app.post("/api/user_settings", (req: Request, res: Response): void => {
     // TODO: import and call database adapter
     // TOOD: parse request and store new setting values
     // TODO: send confirmation response when done
