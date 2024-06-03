@@ -4,48 +4,74 @@ type PieceColor = 'w' | 'b';
 interface PieceProps {
     type: PieceType;
     color: PieceColor;
-    position: number;
+    positionX: number;
+    positionY: number;
     hasMoved: boolean;
 }
 
 export class Piece {
     type: PieceType;
     color: PieceColor;
-    position: number;
+    positionX: number;
+    positionY: number;
     hasMoved: boolean;
 
     constructor(props: PieceProps) {
         this.type = props.type;
         this.color = props.color;
-        this.position = props.position;
+        this.positionX = props.positionX;
+        this.positionY = props.positionY;
         this.hasMoved = false;
     }
 
-    public setHasMoved(): void {
+    protected setHasMoved(): void {
         this.hasMoved = true;
     }
 
-    public getPosition(): number {
-        return this.position;
+    protected getPosition(): any {
+        return [this.positionX, this.positionY];
     }
 
-    public setPosition(position: number): void {
-        this.position = position
+    protected setPosition(positionX: number, positionY: number): void {
+        this.positionX = positionX;
+        this.positionY = positionY;
     }
 
-    public getColor(): PieceColor {
+    protected getColor(): PieceColor {
         return this.color;
     }
 
-    public getType(): PieceType {
+    protected getType(): PieceType {
         return this.type;
     }
 
+    protected isNotOutOfBounds(x:number, y:number): boolean {
+        return (x > 0 && x< 9 && y > 0 && y < 9)
+    }
 }
 
 class Pawn extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'pawn' });
+    }
+
+    //Capturing movement logic is missing
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        if(this.color == 'w' && this.isNotOutOfBounds(this.positionX, this.positionY + 1)) {
+            moveSet.push([this.positionX, this.positionY+1]);
+            if(this.hasMoved == false && this.isNotOutOfBounds(this.positionX, this.positionY + 2)) {
+                moveSet.push([this.positionX, this.positionY+2]);
+            }
+        } else {
+            if(this.isNotOutOfBounds(this.positionX, this.positionY - 1)) {
+                moveSet.push([this.positionX, this.positionY-1]);
+                if(this.hasMoved == false  && this.isNotOutOfBounds(this.positionX, this.positionY - 2)) {
+                    moveSet.push([this.positionX, this.positionY-2]);
+                }
+            } 
+        }
+        return moveSet;
     }
 }
 
@@ -53,11 +79,21 @@ class Knight extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'knight' });
     }
+
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        return moveSet;
+    }
 }
 
 class Bishop extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'bishop' });
+    }
+
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        return moveSet;
     }
 }
 
@@ -65,16 +101,31 @@ class Rook extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'rook' });
     }
+
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        return moveSet;
+    }
 }
 
 class Queen extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'queen' });
     }
+
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        return moveSet;
+    }
 }
 
 class King extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'king' });
+    }
+
+    public getPossibleMoves(): number[][] {
+        let moveSet: number[][] = [];
+        return moveSet;
     }
 }
