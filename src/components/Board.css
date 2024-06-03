@@ -1,9 +1,9 @@
 .board {
     display: grid;
-    grid-template-columns: repeat(8, 10vh);
-    grid-template-rows: repeat(8, 10vh);
-    width: 80vh;
-    height: 80vh;
+    grid-template-columns: repeat(8, 9vh);
+    grid-template-rows: repeat(8, 9vh);
+    width: 72vh;
+    height: 72vh;
     background-color: white;
     
 }
