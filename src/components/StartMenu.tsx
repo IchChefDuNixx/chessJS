@@ -40,11 +40,12 @@ export default StartMenu;*/
 import './StartMenu2.css';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import LottieView from 'lottie-react';
+import { useState, useRef, useEffect } from 'react';
+import Lottie, { LottieRefCurrentProps} from 'lottie-react'
 /*import animationBoard from '../assets/Animation-board.json'*/
 import animationKnight from '../assets/Animation-knight.json'
 import animationRook from '../assets/Animation - Rook.json'
+import React from 'react';
 
 
 
@@ -143,6 +144,20 @@ function StartMenu() {
         return index >= 10 && index < 15;
     };
 
+    const lottieRef = React.useRef<LottieRefCurrentProps>(null)
+    
+    useEffect(() => {
+        if (lottieRef.current) {
+            lottieRef.current?.setSpeed(0.5);
+        }
+        console.log(lottieRef);
+    }, [lottieRef]);
+    
+
+    
+
+    
+
     return (
         <div className='container'>
             {Array.from({ length: 25 }).map((_, index) => (
@@ -156,7 +171,8 @@ function StartMenu() {
                     </div>
                 ) : (
                     <div className='grid-item' key={index}>
-                        <LottieView animationData={logos[index % logos.length]}/>
+                        
+                        <Lottie lottieRef={lottieRef} animationData={logos[index % logos.length]}/>
                         {/*<img src={logos[index % logos.length]} alt="Chess Logo" className='logo' />*/}
                     </div>
                 )
