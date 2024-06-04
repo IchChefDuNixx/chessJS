@@ -84,27 +84,33 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
         let target = e.touches[0].target as HTMLElement;
-        // ignore inputs on empty squares
-        if (target.classList.contains("piece")) {
-            if (!first) {
-                first = target.parentNode as HTMLElement;
-                first.classList.add("selected");
-            } else if (target == first) {
-                first.classList.remove("selected");
-                first = null;
-            } else {
-                second = target.parentNode as HTMLElement;
 
-                let startPosition = first.getAttribute("data-position");
-                let endPosition = second.getAttribute("data-position");
-                // should never be null but TypeScript like this
-                if (startPosition && endPosition)
-                    handleMove(+startPosition, +endPosition);
+        // prevent moving empty squares
+        if (!first && target.classList.contains("piece")) {
+            first = target.parentNode as HTMLElement;
+            first.classList.add("selected");
 
-                first.classList.remove("selected");
-                second.classList.remove("seleceted");
-                first = second = null;
-            }
+        // allow deselecting current piece
+        } else if (first && target.parentNode == first) {
+            first.classList.remove("selected");
+            first = null;
+
+        // make move
+        } else if (first) {
+            if (target.classList.contains("piece"))
+                second = target.parentNode as HTMLElement; // other piece
+            else
+                second = target; // empty square
+
+            let startPosition = first.getAttribute("data-position");
+            let endPosition = second.getAttribute("data-position");
+            // should never be null but TypeScript likes this
+            if (startPosition && endPosition)
+                handleMove(+startPosition, +endPosition);
+
+            first.classList.remove("selected");
+            second.classList.remove("seleceted");
+            first = second = null;
         }
     };
 
