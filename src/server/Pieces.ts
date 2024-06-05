@@ -101,6 +101,13 @@ class Bishop extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
+        // Diagonal moves
+        for (let i = 1; i < 8; i++) {
+            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet.push([this.positionX + i, this.positionY + i]);
+            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet.push([this.positionX - i, this.positionY + i]);
+            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet.push([this.positionX + i, this.positionY - i]);
+            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet.push([this.positionX - i, this.positionY - i]);
+        }
         return moveSet;
     }
 }
@@ -112,6 +119,13 @@ class Rook extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
+        // Horizontal and vertical moves
+        for (let i = 1; i < 8; i++) {
+            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet.push([this.positionX + i, this.positionY]);
+            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet.push([this.positionX - i, this.positionY]);
+            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet.push([this.positionX, this.positionY + i]);
+            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet.push([this.positionX, this.positionY - i]);
+        }
         return moveSet;
     }
 }
@@ -123,6 +137,21 @@ class Queen extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
+        // Combine Bishop and Rook moves
+        // Diagonal moves (Bishop part)
+        for (let i = 1; i < 8; i++) {
+            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet.push([this.positionX + i, this.positionY + i]);
+            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet.push([this.positionX - i, this.positionY + i]);
+            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet.push([this.positionX + i, this.positionY - i]);
+            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet.push([this.positionX - i, this.positionY - i]);
+        }
+        // Horizontal and vertical moves (Rook part)
+        for (let i = 1; i < 8; i++) {
+            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet.push([this.positionX + i, this.positionY]);
+            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet.push([this.positionX - i, this.positionY]);
+            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet.push([this.positionX, this.positionY + i]);
+            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet.push([this.positionX, this.positionY - i]);
+        }
         return moveSet;
     }
 }
