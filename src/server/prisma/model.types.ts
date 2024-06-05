@@ -1,11 +1,11 @@
-import { User, Settings, Game } from "@prisma/client";
+import { User, Game } from "@prisma/client";
 
 
-export type CreateUser = Omit<User, 'id' | 'registered'>;
-
-export type CreateSettings = Pick<Settings, "id">;
+export type CreateUser = Pick<User, 'username' | 'profile_picture'>;
 
 export type CreateGame = Omit<Game, "id" | "timestamp">;
+
+export type UserSettings = Pick<User, "set_a" | "set_b" | "set_c" | "set_d" >;
 
 export type PlayHistory = {
     id: number, 
@@ -15,7 +15,6 @@ export type PlayHistory = {
 };
 
 export type Profile = {
-    id: number;
     username: string;
     registered: Date;
     profile_picture: string | null;

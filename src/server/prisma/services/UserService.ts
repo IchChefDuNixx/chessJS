@@ -1,5 +1,5 @@
-import { CreateUser, CreateSettings, Profile } from "../model.types";
-import { User, Settings } from "@prisma/client";
+import { CreateUser, UserSettings, Profile } from "../model.types";
+import { User } from "@prisma/client";
 
 import prisma from "./PrismaService";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -21,11 +21,11 @@ class UserService {
         return users;
     }
 
-    async getUser(id: number): Promise<User|null> {
+    async getUser(username: string): Promise<User|null> {
         try {
             const user = await prisma.user.findFirst({
                 where: {
-                    id: id,
+                    username: username
                 }
             });
             return user;
@@ -38,12 +38,7 @@ class UserService {
     async createUser(data: CreateUser): Promise<User|null> {
         try {
             const newUser = await prisma.user.create({
-                data: {
-                    ...data,
-                    settings: {
-                        create: {}     // create default user settings
-                    }
-                },
+                data: data
             });
             return newUser;
     
@@ -52,20 +47,58 @@ class UserService {
         }
     }
     
-    async createUserSettings(data: CreateSettings): Promise<Settings|null> {
+    async updateUser(username: string, data: User): Promise<User|null> {
         try {
-            const newSettings = await prisma.settings.create({ data: data });
-            return newSettings;
+            const updatedUser = await prisma.user.update({
+                where: {
+                    username: username
+                },
+                data: data
+            });
+            return updatedUser;
     
-        } catch (error) {
-            return this.handleError(error);
+        } catch (err) {
+            return this.handleError(err);
         }
-    } 
+    }  
 
-    async getUserSettings(id: number): Promise<Settings|null> {
+    // disconnect game??
+    // async deleteUser(username: string): Promise<User|null> {
+    //     try {
+    //         const updatedUser = await prisma.user.update({
+    //             where: {
+    //                 username: username
+    //             },
+    //             data: {
+    //                 GameAsPlayer1: { set: [] },
+    //                 GameAsPlayer2: { set: [] }
+    //             }
+    //         })
+
+    //         const deletedUser = await prisma.user.delete({
+    //             where: {
+    //                 username: username
+    //             }
+    //         });
+    //         return deletedUser;
+    
+    //     } catch (err) {
+    //         return this.handleError(err);
+    //     }
+    // } 
+
+    async getUserSettings(username: string): Promise<UserSettings|null> {
         try {
-            const settings = await prisma.settings.findFirst({
-                where: {id: id}
+            const settings = await prisma.user.findFirst({
+                where: {
+                    username: username
+                },
+                select: {
+                    set_a: true,
+                    set_b: true,
+                    set_c: true,
+                    set_d: true
+                }
             })
             return settings;
 
@@ -74,11 +107,11 @@ class UserService {
         }
     }
     
-    async updateUserSettings(data: Settings): Promise<Settings|null> {
+    async updateUserSettings(username: string, data: UserSettings): Promise<UserSettings|null> {
         try {
-            const updatedSettings = await prisma.settings.update({
+            const updatedSettings = await prisma.user.update({
                 where: {
-                    id: data.id
+                    username: username
                 },
                 data: data
             });
@@ -89,15 +122,15 @@ class UserService {
         }
     }
 
-    async getUserProfile(id: number): Promise<Profile|null> {
+    async getUserProfile(username: string): Promise<Profile|null> {
         try {
             const user = await prisma.user.findFirst({
                 where: {
-                    id: id,
+                    username: username
                 },
                 include: {
-                    GameAsPlayer1: {include: {player_2: true}},
-                    GameAsPlayer2: {include: {player_1: true}},
+                    GameAsPlayer1: true,
+                    GameAsPlayer2: true
                 }
             });
 
@@ -105,28 +138,27 @@ class UserService {
                 return null;
             }
         
-            const history1 = user.GameAsPlayer1.map(data => {
+            const history1 = user.GameAsPlayer1.map(game => {
                 return {
-                    id: data.id, 
-                    timestamp: data.timestamp, 
-                    opponent: data.player_2.username, 
-                    victory: data.winnerID === user.id
+                    id: game.id, 
+                    timestamp: game.timestamp, 
+                    opponent: game.player2, 
+                    victory: game.winner === user.username
                 }
             });
         
-            const history2 = user.GameAsPlayer2.map(data => {
+            const history2 = user.GameAsPlayer2.map(game => {
                 return {
-                    id: data.id, 
-                    timestamp: data.timestamp, 
-                    opponent: data.player_1.username, 
-                    victory: data.winnerID === user.id
+                    id: game.id, 
+                    timestamp: game.timestamp, 
+                    opponent: game.player1, 
+                    victory: game.winner === user.username
                 }
             });
         
             const play_history = history1.concat(history2);
 
             return ({
-                id: user.id,
                 username: user.username,
                 registered: user.registered,
                 profile_picture: user.profile_picture,

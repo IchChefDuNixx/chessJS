@@ -18,7 +18,7 @@ function ProfileDashboard() {
   const [profileData, setProfileData] = React.useState({
     username: "",
     registered: "",
-    profile_picture: null,
+    profile_picture: "",
     play_history: [{id: 0, timestamp: "-", opponent: "-", victory: false}]
   });
   const [profileStatistics, setProfileStatistics] = React.useState({
@@ -32,9 +32,11 @@ function ProfileDashboard() {
   };
 
   // initialize values at mount
-  // TODO: Make User dynamic
+  // TODO: Make User dynamic, maybe get as prop from parent
+  const username = "Ananas";
+
   React.useEffect(() => {
-    axios.get("/api/user/profile/1").then(response => {
+    axios.get(`/api/user/${username}/profile`).then(response => {
       const data = response.data;
       setProfileData(data);
 
@@ -52,7 +54,7 @@ function ProfileDashboard() {
         <Button
           color="inherit"
           onClick={toggleDrawer}
-          startIcon={<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />}
+          startIcon={<Avatar alt="" src={profileData.profile_picture} />}
         >
           <Typography>{profileData.username}</Typography>
         </Button>

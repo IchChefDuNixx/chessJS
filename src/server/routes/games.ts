@@ -14,10 +14,10 @@ router.get("/", async (req: Request, res: Response) => {
 
 // Create new game
 router.post("/", async (req: Request, res: Response) => {
-    const newGame = await await gameService.createGame({
-        winnerID: parseInt(req.body.winnerID),
-        player1Id: parseInt(req.body.player1Id),
-        player2Id: parseInt(req.body.player2Id),
+    const newGame = await gameService.createGame({
+        winner: req.body.winner,
+        player1: req.body.player1,
+        player2: req.body.player2,
     });
     res.send({ ...newGame });
 });

@@ -8,30 +8,25 @@ datasource db {
 }
 
 model User {
-  id                Int           @id @default(autoincrement())
-  username          String        @unique
+  username          String        @id
   registered        DateTime      @default(now())
   profile_picture   String?
   GameAsPlayer1     Game[]        @relation(name: "player_1")
   GameAsPlayer2     Game[]        @relation(name: "player_2")
-  settings          Settings?
+  GameAsWinner      Game[]        @relation(name: "winner")
+  set_a     Boolean   @default(true)
+  set_b     Boolean   @default(true)
+  set_c     Boolean   @default(false)
+  set_d     String    @default("")
 }
 
 model Game {
   id          Int       @id @default(autoincrement())
   timestamp   DateTime  @default(now())
-  player_1    User      @relation(name: "player_1", fields: [player1Id], references: [id])
-  player_2    User      @relation(name: "player_2", fields: [player2Id], references: [id])
-  player1Id   Int
-  player2Id   Int
-  winnerID    Int
-}
-
-model Settings {
-  id    Int       @id
-  user  User      @relation(fields: [id], references: [id])
-  a     Boolean   @default(true)
-  b     Boolean   @default(true)
-  c     Boolean   @default(false)
-  d     String    @default("")
+  player_1    User      @relation(name: "player_1", fields: [player1], references: [username])
+  player_2    User      @relation(name: "player_2", fields: [player2], references: [username])
+  winner_ref  User      @relation(name: "winner", fields: [winner], references: [username])
+  player1     String
+  player2     String
+  winner      String
 }

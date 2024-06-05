@@ -29,27 +29,39 @@ router.post("/", async (req: Request, res: Response) => {
     res.send({ ...newUser });
 });
 
+// Get user
+router.get("/:username", async (req: Request, res: Response) => {
+    const user = await userService.getUser(req.params.username);
+    res.send({ ...user });
+});
+
+// Update user
+router.put("/:username", async (req: Request, res: Response) => {
+    const updatedUser = await userService.updateUser(req.params.username, req.body);
+    res.send({ ...updatedUser });
+});
+
+// Delete user (Not sure if we want to allow that, because games have usernames as foreign keys)
+// router.delete("/:username", async (req: Request, res: Response) => {
+//     const newUser = await userService.deleteUser(req.params.username);
+//     res.send({ ...newUser });
+// });
+
 // Get user settings
-router.get("/settings/:id", async (req: Request, res: Response) => {
-    const settings = await userService.getUserSettings(parseInt(req.params.id));
+router.get("/:username/settings", async (req: Request, res: Response) => {
+    const settings = await userService.getUserSettings(req.params.username);
     res.send({ ...settings });
 })
 
-// Create user settings (default settings are automatically created when new user is created)
-router.post("/settings", async (req: Request, res: Response) => {
-    const newSettings = await userService.createUserSettings(req.body);
-    res.send({ ...newSettings });
-});
-
 // Change user settings
-router.put("/settings/:id", async (req: Request, res: Response) => {
-    const updatedSettings = await userService.updateUserSettings(req.body);
+router.put("/:username/settings", async (req: Request, res: Response) => {
+    const updatedSettings = await userService.updateUserSettings(req.body.username, req.body);
     res.send({ ...updatedSettings });
 });
 
 // Get user profile
-router.get("/profile/:id", async (req: Request, res: Response) => {
-    const profile = await userService.getUserProfile(parseInt(req.params.id));
+router.get("/:username/profile", async (req: Request, res: Response) => {
+    const profile = await userService.getUserProfile(req.params.username);
     res.send({ ...profile });
 });
 
