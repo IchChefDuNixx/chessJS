@@ -28,7 +28,7 @@ export class Piece {
         this.hasMoved = true;
     }
 
-    protected getPosition(): any {
+    public getPosition(): any {
         return [this.positionX, this.positionY];
     }
 
@@ -37,15 +37,15 @@ export class Piece {
         this.positionY = positionY;
     }
 
-    protected getColor(): PieceColor {
+    public getColor(): PieceColor {
         return this.color;
     }
 
-    protected getType(): PieceType {
+    public getType(): PieceType {
         return this.type;
     }
 
-    protected isNotOutOfBounds(x:number, y:number): boolean {
+    public isInBounds(x:number, y:number): boolean {
         return (x > 0 && x< 9 && y > 0 && y < 9)
     }
 }
@@ -58,15 +58,15 @@ class Pawn extends Piece {
     //Capturing movement logic is missing
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
-        if(this.color == 'w' && this.isNotOutOfBounds(this.positionX, this.positionY + 1)) {
+        if(this.color == 'w' && this.isInBounds(this.positionX, this.positionY + 1)) {
             moveSet.push([this.positionX, this.positionY+1]);
-            if(this.hasMoved == false && this.isNotOutOfBounds(this.positionX, this.positionY + 2)) {
+            if(this.hasMoved == false && this.isInBounds(this.positionX, this.positionY + 2)) {
                 moveSet.push([this.positionX, this.positionY+2]);
             }
         } else {
-            if(this.isNotOutOfBounds(this.positionX, this.positionY - 1)) {
+            if(this.isInBounds(this.positionX, this.positionY - 1)) {
                 moveSet.push([this.positionX, this.positionY-1]);
-                if(this.hasMoved == false  && this.isNotOutOfBounds(this.positionX, this.positionY - 2)) {
+                if(this.hasMoved == false  && this.isInBounds(this.positionX, this.positionY - 2)) {
                     moveSet.push([this.positionX, this.positionY-2]);
                 }
             } 
@@ -82,6 +82,14 @@ class Knight extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
+        if(this.isInBounds(this.positionX+2, this.positionY+1)){moveSet.push([this.positionX+2, this.positionY+1])}
+        if(this.isInBounds(this.positionX+2, this.positionY-1)){moveSet.push([this.positionX+2, this.positionY-1])}
+        if(this.isInBounds(this.positionX+1, this.positionY-2)){moveSet.push([this.positionX+1, this.positionY-2])}
+        if(this.isInBounds(this.positionX+1, this.positionY+2)){moveSet.push([this.positionX+1, this.positionY+2])}
+        if(this.isInBounds(this.positionX-1, this.positionY-2)){moveSet.push([this.positionX-1, this.positionY-2])}
+        if(this.isInBounds(this.positionX-1, this.positionY+2)){moveSet.push([this.positionX-1, this.positionY+2])}
+        if(this.isInBounds(this.positionX-2, this.positionY+1)){moveSet.push([this.positionX-2, this.positionY+1])}
+        if(this.isInBounds(this.positionX-2, this.positionY-1)){moveSet.push([this.positionX-2, this.positionY-1])}
         return moveSet;
     }
 }
@@ -126,6 +134,16 @@ class King extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
+        // Moves one square in any direction
+        const kingMoves = [
+            [1, 0], [-1, 0], [0, 1], [0, -1],
+            [1, 1], [-1, -1], [1, -1], [-1, 1]
+        ];
+        for (let move of kingMoves) {
+            let newX = this.positionX + move[0];
+            let newY = this.positionY + move[1];
+            if (this.isInBounds(newX, newY)) moveSet.push([newX, newY]);
+        }
         return moveSet;
     }
 }
