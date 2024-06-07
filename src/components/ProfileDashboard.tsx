@@ -32,11 +32,11 @@ function ProfileDashboard() {
   };
 
   // initialize values at mount
-  // TODO: Make User dynamic, maybe get as prop from parent
-  const username = "Ananas";
 
   React.useEffect(() => {
-    axios.get(`/api/user/${username}/profile`).then(response => {
+    const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}};  // authentication
+
+    axios.get(`/api/user/profile`, config).then(response => {
       const data = response.data;
       setProfileData(data);
 
@@ -44,7 +44,7 @@ function ProfileDashboard() {
       const games_won: number = data.play_history.filter((obj: { victory: boolean }) => obj.victory).length;
       const winrate: number = Math.round(100*(games_won / games_played));
       setProfileStatistics({games_played, games_won, winrate});
-    });
+    }).catch((error) => {})
   }, []); // <- This empty array is SUPER important
 
   return (

@@ -2,8 +2,7 @@ import Board from './Board';
 import NavBar from './NavBar';
 import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
-import UserForm from './Forms/UserForm';
-import GameForm from './Forms/GameForm';
+import LoginForm from './LoginForm';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import './App.css';
@@ -44,15 +43,12 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: '/user/new',
+    path: '/login',
     element: (
-      <UserForm/>
-    )
-  },
-  {
-    path: '/game/new',
-    element: (
-      <GameForm/>
+      <>
+        <NavBar />
+        <LoginForm/>
+      </>
     )
   }
 ]);
