@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import ViteExpress from "vite-express";
 import WebSocket, { WebSocketServer } from "ws";
@@ -5,6 +6,8 @@ import userRouter from "./routes/user.ts";
 import gameRouter from "./routes/games.ts";
 
 // console logs in here end up in the terminal hosting the server, not the browser
+
+dotenv.config();    // loads .env file
 
 const app = express();
 app.use(express.json()); // never forget

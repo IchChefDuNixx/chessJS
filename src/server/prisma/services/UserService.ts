@@ -1,5 +1,5 @@
-import { CreateUser, UserSettings, Profile } from "../model.types";
-import { User } from "@prisma/client";
+import { UpdateUser, UserSettings, Profile } from "../model.types";
+import { User, UserPassword } from "@prisma/client";
 
 import prisma from "./PrismaService";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -35,19 +35,42 @@ class UserService {
         }
     }
 
-    async createUser(data: CreateUser): Promise<User|null> {
+    async getUserPassword(username: string): Promise<UserPassword|null> {
         try {
-            const newUser = await prisma.user.create({
-                data: data
+            const user = await prisma.userPassword.findFirst({
+                where: {
+                    username: username
+                }
             });
-            return newUser;
-    
+            return user;
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    async createUser(data: UserPassword): Promise<User|null> {
+        try {
+            const newUser = await prisma.userPassword.create({
+                data: {
+                    ...data,
+                    user: {
+                        create: {}
+                    }
+                },
+                include: {
+                    user: true
+                }
+            });
+            return newUser.user;
+
         } catch (err) {
             return this.handleError(err);
         }
     }
-    
-    async updateUser(username: string, data: User): Promise<User|null> {
+
+    // TODO: prevent update to registered column
+    async updateUser(username: string, data: Partial<UpdateUser>): Promise<User|null> {
         try {
             const updatedUser = await prisma.user.update({
                 where: {
@@ -56,36 +79,11 @@ class UserService {
                 data: data
             });
             return updatedUser;
-    
+
         } catch (err) {
             return this.handleError(err);
         }
-    }  
-
-    // disconnect game??
-    // async deleteUser(username: string): Promise<User|null> {
-    //     try {
-    //         const updatedUser = await prisma.user.update({
-    //             where: {
-    //                 username: username
-    //             },
-    //             data: {
-    //                 GameAsPlayer1: { set: [] },
-    //                 GameAsPlayer2: { set: [] }
-    //             }
-    //         })
-
-    //         const deletedUser = await prisma.user.delete({
-    //             where: {
-    //                 username: username
-    //             }
-    //         });
-    //         return deletedUser;
-    
-    //     } catch (err) {
-    //         return this.handleError(err);
-    //     }
-    // } 
+    }
 
     async getUserSettings(username: string): Promise<UserSettings|null> {
         try {
@@ -106,14 +104,20 @@ class UserService {
             return this.handleError(error);
         }
     }
-    
+
     async updateUserSettings(username: string, data: UserSettings): Promise<UserSettings|null> {
         try {
             const updatedSettings = await prisma.user.update({
                 where: {
                     username: username
                 },
-                data: data
+                data: data,
+                select: {
+                    set_a: true,
+                    set_b: true,
+                    set_c: true,
+                    set_d: true
+                }
             });
             return updatedSettings;
 
@@ -137,25 +141,25 @@ class UserService {
             if (!user) {
                 return null;
             }
-        
+
             const history1 = user.GameAsPlayer1.map(game => {
                 return {
-                    id: game.id, 
-                    timestamp: game.timestamp, 
-                    opponent: game.player2, 
+                    id: game.id,
+                    timestamp: game.timestamp,
+                    opponent: game.player2,
                     victory: game.winner === user.username
                 }
             });
-        
+
             const history2 = user.GameAsPlayer2.map(game => {
                 return {
-                    id: game.id, 
-                    timestamp: game.timestamp, 
-                    opponent: game.player1, 
+                    id: game.id,
+                    timestamp: game.timestamp,
+                    opponent: game.player1,
                     victory: game.winner === user.username
                 }
             });
-        
+
             const play_history = history1.concat(history2);
 
             return ({
