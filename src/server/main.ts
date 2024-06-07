@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import ViteExpress from "vite-express";
-import { WebSocketServer } from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 import userRouter from "./routes/user.ts";
 import gameRouter from "./routes/games.ts";
 
@@ -11,7 +11,7 @@ app.use(express.json()); // never forget
 
 // HTTP
 // this is a test to see if the server is alive
-app.get("/api/hello", (req: Request, res: Response): void => {
+app.get("/api/hello", (_: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
@@ -33,11 +33,13 @@ ViteExpress.listen(app, 5173, () => {
 
 
 // WEB SOCKETS
-const server = app.listen(8173, () => {
-    console.log("WebSocket server is running on port 8173");
-});
-const wss = new WebSocketServer({ server });
-const clients: WebSocket[] = [];
+enum Role {host, opponent, spectator};
+const roles: { [username: string]: Role} = {};
+
+type Client = { username: string, connection: WebSocket };
+type Players = { host?: Client , opponent?: Client, spectators: Client[] }
+const players: Players = { spectators: [] };
+
 let currentBoard: string[] = [
     "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
     "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
@@ -49,25 +51,60 @@ let currentBoard: string[] = [
     "rook_w", "knight_w", "bishop_w", "king_w", "queen_w", "bishop_w", "knight_w", "rook_w"
 ];
 
-function handleMessage(message) {
+function handleMessage(message: string) { // string | Buffer
     const dataFromClient = JSON.parse(message);
     currentBoard = dataFromClient.board;
+    const data = JSON.stringify({ board: currentBoard });
 
-    for(const client of clients) {
-        client.send(JSON.stringify({ board: currentBoard }));
+    players.host?.connection.send(data);
+    players.opponent?.connection.send(data);
+    for(const spectator of players.spectators) {
+        spectator.connection.send(data);
     };
 }
 
-wss.on("connection", function(connection) {
+const server = app.listen(8173, () => {
+    console.log("WebSocket server is running on port 8173");
+});
+const wss = new WebSocketServer({ server });
+wss.on("connection", function(connection) { // export this to the login component?
     console.log("Received a new connection");
-    let id = clients.length + 1;
     connection.send(JSON.stringify({board: currentBoard}));
+    // TODO: how to get username?
+    const username: string = "asd";
+    console.log(`player ${username} joined.`);
 
-    clients.push(connection);
-    console.log(`player ${id} connected.`);
-    connection.on("message", (message) => handleMessage(message));
+    // reconnect logic
+    if (roles[username] == 0) {
+        players.host = { username, connection };
+    } else if (roles[username] == 1) {
+        players.opponent = { username, connection };
+    } else {
+        // new connection logic
+        if (!("host" in players)) {
+            players.host = { username, connection };
+            roles[username] = Role.host;
+        } else if (!("opponent" in players)) {
+            players.opponent = { username, connection };
+            roles[username] = Role.opponent;
+        } else {
+            players.spectators.push({ username, connection });
+            roles[username] = Role.spectator;
+        }
+    }
+
+    // console.log(players);
+    // console.log(roles);
+
+    connection.on("message", (message: string) => handleMessage(message));
     connection.on("close", () => {
-        console.log(`player ${id} left`);
-        clients.splice(id, 1); // delete connection from array
+        console.log(`player ${username} left`);
+        // keep host and opponent
+        if (roles[username] == Role.spectator) {
+            players.spectators = players.spectators.filter(
+                client => client.username != username
+            );
+            delete roles[username];
+        }
     });
 });
