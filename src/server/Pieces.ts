@@ -93,20 +93,24 @@ class Knight extends Piece {
         return moveSet;
     }
 }
-
 class Bishop extends Piece {
     constructor(props: PieceProps) {
         super({ ...props, type: 'bishop' });
     }
 
-    public getPossibleMoves(): number[][] {
-        let moveSet: number[][] = [];
+    public getPossibleMoves(): {[key: string]: number[][]} {
+        let moveSet: {[key: string]: number[][]} = {
+            "up-left": [],
+            "up-right": [],
+            "down-left": [],
+            "down-right": []
+        };
         // Diagonal moves
         for (let i = 1; i < 8; i++) {
-            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet.push([this.positionX + i, this.positionY + i]);
-            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet.push([this.positionX - i, this.positionY + i]);
-            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet.push([this.positionX + i, this.positionY - i]);
-            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet.push([this.positionX - i, this.positionY - i]);
+            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet["up-right"].push([this.positionX + i, this.positionY + i]);
+            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet["up-left"].push([this.positionX - i, this.positionY + i]);
+            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet["down-right"].push([this.positionX + i, this.positionY - i]);
+            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet["down-left"].push([this.positionX - i, this.positionY - i]);
         }
         return moveSet;
     }
@@ -117,14 +121,19 @@ class Rook extends Piece {
         super({ ...props, type: 'rook' });
     }
 
-    public getPossibleMoves(): number[][] {
-        let moveSet: number[][] = [];
+    public getPossibleMoves(): {[key: string]: number[][]} {
+        let moveSet: {[key: string]: number[][]} = {
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": []
+        };
         // Horizontal and vertical moves
         for (let i = 1; i < 8; i++) {
-            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet.push([this.positionX + i, this.positionY]);
-            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet.push([this.positionX - i, this.positionY]);
-            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet.push([this.positionX, this.positionY + i]);
-            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet.push([this.positionX, this.positionY - i]);
+            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet["right"].push([this.positionX + i, this.positionY]);
+            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet["left"].push([this.positionX - i, this.positionY]);
+            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet["up"].push([this.positionX, this.positionY + i]);
+            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet["down"].push([this.positionX, this.positionY - i]);
         }
         return moveSet;
     }
@@ -135,22 +144,31 @@ class Queen extends Piece {
         super({ ...props, type: 'queen' });
     }
 
-    public getPossibleMoves(): number[][] {
-        let moveSet: number[][] = [];
+    public getPossibleMoves(): {[key: string]: number[][]} {
+        let moveSet: {[key: string]: number[][]} = {
+            "up-left": [],
+            "up-right": [],
+            "down-left": [],
+            "down-right": [],
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": []
+        };
         // Combine Bishop and Rook moves
         // Diagonal moves (Bishop part)
         for (let i = 1; i < 8; i++) {
-            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet.push([this.positionX + i, this.positionY + i]);
-            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet.push([this.positionX - i, this.positionY + i]);
-            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet.push([this.positionX + i, this.positionY - i]);
-            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet.push([this.positionX - i, this.positionY - i]);
+            if (this.isInBounds(this.positionX + i, this.positionY + i)) moveSet["up-right"].push([this.positionX + i, this.positionY + i]);
+            if (this.isInBounds(this.positionX - i, this.positionY + i)) moveSet["up-left"].push([this.positionX - i, this.positionY + i]);
+            if (this.isInBounds(this.positionX + i, this.positionY - i)) moveSet["down-right"].push([this.positionX + i, this.positionY - i]);
+            if (this.isInBounds(this.positionX - i, this.positionY - i)) moveSet["down-left"].push([this.positionX - i, this.positionY - i]);
         }
         // Horizontal and vertical moves (Rook part)
         for (let i = 1; i < 8; i++) {
-            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet.push([this.positionX + i, this.positionY]);
-            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet.push([this.positionX - i, this.positionY]);
-            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet.push([this.positionX, this.positionY + i]);
-            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet.push([this.positionX, this.positionY - i]);
+            if (this.isInBounds(this.positionX + i, this.positionY)) moveSet["right"].push([this.positionX + i, this.positionY]);
+            if (this.isInBounds(this.positionX - i, this.positionY)) moveSet["left"].push([this.positionX - i, this.positionY]);
+            if (this.isInBounds(this.positionX, this.positionY + i)) moveSet["up"].push([this.positionX, this.positionY + i]);
+            if (this.isInBounds(this.positionX, this.positionY - i)) moveSet["down"].push([this.positionX, this.positionY - i]);
         }
         return moveSet;
     }
