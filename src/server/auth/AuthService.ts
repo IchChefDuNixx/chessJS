@@ -1,0 +1,55 @@
+import jwt from "jsonwebtoken";
+import bycrypt from "bcryptjs";
+import UserService from "../prisma/services/UserService";
+
+
+
+class AuthService {
+    constructor(private readonly userService: UserService) {};
+
+    async login(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
+        // get user from db
+        const user = await this.userService.getUserPassword(username);
+        if (!user)
+            return { "status": 400, "message": "User not found", "accessToken": "" };
+
+        // check password
+        const correct_password = await bycrypt.compare(password, user.password);
+        if (!correct_password)
+            return { "status": 400, "message": "Authentication failed", "accessToken": "" };
+
+        // create access token
+        if (!process.env.ACCESS_TOKEN_SECRET)
+            throw new Error("Env variable not defined");
+
+        const token = jwt.sign(
+            { username: username},
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        return { "status": 200, "message": "Authenticated", "accessToken": token };
+    }
+
+    async register(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
+        // check if user exists
+        if (await this.userService.getUser(username))
+            return { "status": 400, "message": "User already exists", "accessToken": "" };
+
+        // hash password
+        const password_hash = await bycrypt.hash(password, 10);
+
+        // create user
+        const newUser = await this.userService.createUser({
+            username: username,
+            password: password_hash
+        });
+        if (!newUser)
+            return { "status": 200, "message": "User creation failed", "accessToken": "" };
+
+        // automatically log in
+        return this.login(username, password);
+    }
+}
+
+export default AuthService;

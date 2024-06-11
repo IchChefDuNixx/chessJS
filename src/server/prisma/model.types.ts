@@ -1,7 +1,10 @@
-import { User, Game } from "@prisma/client";
+import { User, Game, UserPassword } from "@prisma/client";
 
+export type Login = UserPassword;
 
-export type CreateUser = Pick<User, 'username' | 'profile_picture'>;
+export type CreateUser = Pick<User, "username">;
+
+export type UpdateUser = Omit<User, "registered">;
 
 export type CreateGame = Omit<Game, "id" | "timestamp">;
 

@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  username          String        @id
-  registered        DateTime      @default(now())
+  username          String            @id
+  password          UserPassword      @relation(fields: [username], references: [username])  
+  registered        DateTime          @default(now())
   profile_picture   String?
-  GameAsPlayer1     Game[]        @relation(name: "player_1")
-  GameAsPlayer2     Game[]        @relation(name: "player_2")
-  GameAsWinner      Game[]        @relation(name: "winner")
-  set_a     Boolean   @default(true)
-  set_b     Boolean   @default(true)
-  set_c     Boolean   @default(false)
-  set_d     String    @default("")
+  GameAsPlayer1     Game[]            @relation(name: "player_1")
+  GameAsPlayer2     Game[]            @relation(name: "player_2")
+  GameAsWinner      Game[]            @relation(name: "winner")
+  set_a             Boolean           @default(true)
+  set_b             Boolean           @default(true)
+  set_c             Boolean           @default(false)
+  set_d             String            @default("")
 }
 
 model Game {
@@ -29,4 +30,11 @@ model Game {
   player1     String
   player2     String
   winner      String
+}
+
+// Theoretically could be in User, but when querying you'd have to exclude the password everytime.
+model UserPassword {
+  user      User?      
+  username  String    @id
+  password  String    // hashed password, not plaintext
 }

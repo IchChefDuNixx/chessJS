@@ -3,6 +3,7 @@ import Square from "./Square";
 import Piece from "./Piece";
 import "./Board.css";
 import axios from "axios";
+import useWebSocket from 'react-use-websocket';
 
 const initialBoard: string[] = [
   "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
@@ -28,8 +29,14 @@ const alphanumericBoard: string[] = [
 ];
 
 function Board() {
-    const [board, setBoard] = useState(initialBoard);
     const [reversed, setReversed] = useState(false);
+    const { sendJsonMessage, lastJsonMessage } = useWebSocket("ws://localhost:8173", {
+        onOpen: () => console.log('WebSocket connection established.'),
+        //Will attempt to reconnect on all close events, such as server shutting down
+        shouldReconnect: (closeEvent) => true,
+    });
+    // const [board, setBoard] = useState(initialBoard);
+    let board: string[] = lastJsonMessage?.board || initialBoard;
 
     const handleMove = (start: number, end: number): void => {
         // the move has to be checked by our chess model
@@ -38,8 +45,9 @@ function Board() {
             const movedPiece = newBoard[start];
             newBoard[start] = "";
             newBoard[end] = movedPiece;
-            setBoard(newBoard);
-        }
+            // setBoard(newBoard);
+            sendJsonMessage({board: newBoard});
+        };
 
         axios.get("/api/validate_move", {}) // add params for checking in this object
             .then((response) => {
@@ -82,6 +90,7 @@ function Board() {
             </div>
             <div>
                 <button onClick={() => setReversed(!reversed)} > Reverse Board </button>
+                <button onClick={() => sendJsonMessage({board: initialBoard})}> Restart Game </button>
             </div>
         </>
     );

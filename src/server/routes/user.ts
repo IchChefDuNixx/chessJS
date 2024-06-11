@@ -1,10 +1,11 @@
-import express from "express";
-import { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import UserService from "../prisma/services/UserService";
+import { authenticate, AuthRequest } from "../auth/AuthMiddleware";
+import AuthService from "../auth/AuthService";
 
 
 /*
-    Currently errors are handled in user.controller. 
+    Currently errors are handled in userService.
     Errors are logged to the console.
     Return values are null if either an error occurred or no matching value was found in the database.
     No checking of request body or params yet. (E.g whether req.body matches the required type)
@@ -13,63 +14,63 @@ import UserService from "../prisma/services/UserService";
 
 const router = express.Router();
 const userService = new UserService();
+const authService = new AuthService(userService);
 
 // Only used for logging
 router.use(logger);
 
-// Get all users
-router.get("/", async (req: Request, res: Response) => {
-    const users = await userService.getUsers();
-    res.send({ ...users });
+
+router.post("/login", async (req: Request, res: Response) => {
+    const data = await authService.login(req.body.username, req.body.password);
+    res.status(data.status).send({ message: data.message, accessToken: data.accessToken });
 });
 
-// Create new user
-router.post("/", async (req: Request, res: Response) => {
-    const newUser = await userService.createUser(req.body);
-    res.send({ ...newUser });
+router.post("/register", async (req: Request, res: Response) => {
+    const data = await authService.register(req.body.username, req.body.password);
+    res.status(data.status).send({ message: data.message, accessToken: data.accessToken });
 });
+
+
+// Check authentication for everything apart from login and register.
+router.use(authenticate);
 
 // Get user
-router.get("/:username", async (req: Request, res: Response) => {
-    const user = await userService.getUser(req.params.username);
+router.get("/", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;  // user is added to the request by authentication middleware
+    const user = await userService.getUser(authUser?.username);
     res.send({ ...user });
 });
 
 // Update user
-router.put("/:username", async (req: Request, res: Response) => {
-    const updatedUser = await userService.updateUser(req.params.username, req.body);
+router.put("/", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;
+    const updatedUser = await userService.updateUser(authUser?.username, req.body.data);
     res.send({ ...updatedUser });
 });
 
-// Delete user (Not sure if we want to allow that, because games have usernames as foreign keys)
-// router.delete("/:username", async (req: Request, res: Response) => {
-//     const newUser = await userService.deleteUser(req.params.username);
-//     res.send({ ...newUser });
-// });
-
 // Get user settings
-router.get("/:username/settings", async (req: Request, res: Response) => {
-    const settings = await userService.getUserSettings(req.params.username);
+router.get("/settings", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;
+    const settings = await userService.getUserSettings(authUser?.username);
     res.send({ ...settings });
 })
 
 // Change user settings
-router.put("/:username/settings", async (req: Request, res: Response) => {
-    const updatedSettings = await userService.updateUserSettings(req.body.username, req.body);
+router.put("/settings", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;
+    const updatedSettings = await userService.updateUserSettings(authUser?.username, req.body.data);
     res.send({ ...updatedSettings });
 });
 
 // Get user profile
-router.get("/:username/profile", async (req: Request, res: Response) => {
-    const profile = await userService.getUserProfile(req.params.username);
+router.get("/profile", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;
+    const profile = await userService.getUserProfile(authUser?.username);
     res.send({ ...profile });
 });
 
 function logger(req: Request, res: Response, next: NextFunction) {
-    console.log(`Request to user${req.url}`);
-    // console.log("params:", req.params);
-    // console.log("query:", req.query);
-    // console.log("body:", req.body);
+    console.log(`Request to /api/user${req.url}`);
     next();
 }
 
