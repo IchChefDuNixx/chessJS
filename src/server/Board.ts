@@ -1,26 +1,55 @@
-const createBoard = (): string[] => {
-    const initialBoard: string[] = [
-      "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
-      "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
-      "", "", "", "", "", "", "", "",
-      "", "", "", "", "", "", "", "",
-      "", "", "", "", "", "", "", "",
-      "", "", "", "", "", "", "", "",
-      "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
-      "rook_w", "knight_w", "bishop_w", "king_w", "queen_w", "bishop_w", "knight_w", "rook_w"
-    ];
-    return initialBoard;
-  };
+import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
 
-  const boardAsMatrix = (): Map<string, number> => {
-    const boardAsMatrix: Map<string, number> = new Map<string, number>();
-  
-    let counter = 0;
-    for (let i = 1; i <= 8; i++) {
-      for (let j = 1; j <= 8; j++) {
-        boardAsMatrix.set(`${i},${j}`, counter);
-        counter++;
-      }
-    }
-    return boardAsMatrix;
-  };
+class Board {}
+
+const createBoard = (): string[] => {return ["s"]};
+
+const initialBoard: (Piece | null)[][] = [
+  [
+    new Rook({ X: 0, Y: 0, color: "b" }),
+    new Knight({ X: 0, Y: 1, color: "b" }),
+    new Bishop({ X: 0, Y: 2, color: "b" }),
+    new Queen({ X: 0, Y: 3, color: "b" }),
+    new King({ X: 0, Y: 4, color: "b" }),
+    new Bishop({ X: 0, Y: 5, color: "b" }),
+    new Knight({ X: 0, Y: 6, color: "b" }),
+    new Rook({ X: 0, Y: 7, color: "b" }),
+  ],
+  [
+    new Pawn({ X: 1, Y: 0, color: "b" }),
+    new Pawn({ X: 1, Y: 1, color: "b" }),
+    new Pawn({ X: 1, Y: 2, color: "b" }),
+    new Pawn({ X: 1, Y: 3, color: "b" }),
+    new Pawn({ X: 1, Y: 4, color: "b" }),
+    new Pawn({ X: 1, Y: 5, color: "b" }),
+    new Pawn({ X: 1, Y: 6, color: "b" }),
+    new Pawn({ X: 1, Y: 7, color: "b" }),
+  ],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [
+    new Pawn({ X: 6, Y: 0, color: "w" }),
+    new Pawn({ X: 6, Y: 1, color: "w" }),
+    new Pawn({ X: 6, Y: 2, color: "w" }),
+    new Pawn({ X: 6, Y: 3, color: "w" }),
+    new Pawn({ X: 6, Y: 4, color: "w" }),
+    new Pawn({ X: 6, Y: 5, color: "w" }),
+    new Pawn({ X: 6, Y: 6, color: "w" }),
+    new Pawn({ X: 6, Y: 7, color: "w" }),
+  ],
+  [
+    new Rook({ X: 7, Y: 0, color: "w" }),
+    new Knight({ X: 7, Y: 1, color: "w" }),
+    new Bishop({ X: 7, Y: 2, color: "w" }),
+    new Queen({ X: 7, Y: 3, color: "w" }),
+    new King({ X: 7, Y: 4, color: "w" }),
+    new Bishop({ X: 7, Y: 5, color: "w" }),
+    new Knight({ X: 7, Y: 6, color: "w" }),
+    new Rook({ X: 7, Y: 7, color: "w" }),
+  ],
+];
+
+
+export { Board };

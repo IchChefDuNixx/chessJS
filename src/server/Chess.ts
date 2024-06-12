@@ -1,5 +1,4 @@
-import {} from './Pieces';
-import {} from './Board';
+import {} from "./Board";
 
 
 var turn = "w"

@@ -18,9 +18,18 @@ app.get("/api/hello", (_: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
-app.get("/api/validate_move", (req: Request, res: Response): void => {
+app.post("/api/validate_move", (req: Request, res: Response): void => {
     // TODO: import and call game logic function
     // TODO: send response with value true/false
+
+    // transform list index to matrix index
+    // TODO: INCORRECT, FIX +-1
+
+    req.body = { start: 5, end: 34 }
+
+    req.body.start = [~~(req.body.start / 8), (req.body.start % 8)];
+    req.body.end = [~~(req.body.end / 8), (req.body.end % 8)];
+    console.log(req.body);
 
     // mock
     res.send(true);
@@ -40,7 +49,7 @@ enum Role {host, opponent, spectator};
 const roles: { [username: string]: Role} = {};
 
 type Client = { username: string, connection: WebSocket };
-type Players = { host?: Client , opponent?: Client, spectators: Client[] }
+type Players = { host?: Client , opponent?: Client, spectators: Client[] };
 const players: Players = { spectators: [] };
 
 let currentBoard: string[] = [
@@ -95,9 +104,6 @@ wss.on("connection", function(connection) { // export this to the login componen
             roles[username] = Role.spectator;
         }
     }
-
-    // console.log(players);
-    // console.log(roles);
 
     connection.on("message", (message: string) => handleMessage(message));
     connection.on("close", () => {

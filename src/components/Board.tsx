@@ -49,7 +49,7 @@ function Board() {
             sendJsonMessage({board: newBoard});
         };
 
-        axios.get("/api/validate_move", {}) // add params for checking in this object
+        axios.post("/api/validate_move", {start, end}) // add params for checking in this object
             .then((response) => {
                 let is_valid_move: boolean = response.data;
                 if (is_valid_move) execute_move();
