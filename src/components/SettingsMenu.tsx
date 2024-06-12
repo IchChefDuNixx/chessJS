@@ -1,19 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 // import './SettingsMenu.css';
-import { Box, Button, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
 import axios from 'axios';
 
 function SettingsMenu() {
-
-  const navigate = useNavigate();
-  const [sliderH, setSliderH] = useState([40,60]);
-  const [sliderV, setSliderV] = useState(50);
+  const [gender, setGender] = useState([40,60]);
+  const [human, setHuman] = useState(50);
   const [settings, setSettings] = useState({
     showTooltips: false,
     darkMode: false,
-    gender: sliderH,
-    human: sliderV
+    gender: gender,
+    human: human
   });
 
   // initialize values at mount
@@ -72,11 +69,11 @@ function SettingsMenu() {
       <Divider />
       <Typography>Gender</Typography>
       <Slider
-        value={sliderH}
+        value={gender}
         min={0}
         max={300}
         step={0.01}
-        onChange={(_, newValues: number[]) => setSliderH(newValues)}
+        onChange={(_, newValues: number[]) => setGender(newValues)}
         onChangeCommitted={(_, newValues: number) => handleSliderChange("gender", newValues)}
         marks={[
           { value: 100, label: "Female" },
@@ -86,11 +83,11 @@ function SettingsMenu() {
       />
       <Box sx={{ height: 200 }}>
         <Slider
-          value={sliderV}
+          value={human}
           min={0}
           max={100}
           step={0.001}
-          onChange={(_, newValue: number) => setSliderV(newValue)}
+          onChange={(_, newValue: number) => setHuman(newValue)}
           onChangeCommitted={(_, newValue: number) => handleSliderChange("human", newValue)}
           color='secondary'
           orientation='vertical'

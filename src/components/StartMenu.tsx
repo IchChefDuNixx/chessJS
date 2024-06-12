@@ -49,7 +49,7 @@ function StartMenu() {
                 isButtonContainer(index) ? (
                     <div className='grid-item' key={index}>
                         {index === 10 && <button onClick={test_server_connection}>{text}</button>}
-                        {index === 11 && <button onClick={() => navigate('/play')}>Play Local Game</button>}
+                        {index === 11 && <button onClick={() => navigate('/local')}>Play Local Game</button>}
                         {index === 12 && <button onClick={() => navigate('/online')}>Play Online Game</button>}
                         {index === 13 && <button onClick={() => navigate('/login')}>Login</button>}
                         {index === 14 && <button onClick={() => navigate('/settings')}>Settings</button>}
