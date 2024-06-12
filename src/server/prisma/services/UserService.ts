@@ -92,10 +92,11 @@ class UserService {
                     username: username
                 },
                 select: {
-                    set_a: true,
-                    set_b: true,
-                    set_c: true,
-                    set_d: true
+                    showTooltips: true,
+                    darkMode: true,
+                    gender_min: true,
+                    gender_max: true,
+                    human: true
                 }
             })
             return settings;
@@ -113,10 +114,11 @@ class UserService {
                 },
                 data: data,
                 select: {
-                    set_a: true,
-                    set_b: true,
-                    set_c: true,
-                    set_d: true
+                    showTooltips: true,
+                    darkMode: true,
+                    gender_min: true,
+                    gender_max: true,
+                    human: true
                 }
             });
             return updatedSettings;

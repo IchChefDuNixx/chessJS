@@ -8,7 +8,7 @@ export type UpdateUser = Omit<User, "registered">;
 
 export type CreateGame = Omit<Game, "id" | "timestamp">;
 
-export type UserSettings = Pick<User, "set_a" | "set_b" | "set_c" | "set_d" >;
+export type UserSettings = Pick<User, "showTooltips" | "darkMode" | "gender_min" | "gender_max" | "human">;
 
 export type PlayHistory = {
     id: number, 
