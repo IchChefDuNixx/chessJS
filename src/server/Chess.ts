@@ -1,4 +1,6 @@
-import {} from "./Board";
+import {Board} from "./Board";
+
+const createBoard = new Board();
 
 
 var turn = "w"
