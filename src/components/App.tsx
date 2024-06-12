@@ -25,7 +25,16 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: '/play',
+    path: '/local',
+    element: (
+      <>
+        <NavBar hideProfileDashboard={true}/>
+        <Board />
+      </>
+    )
+  },
+  {
+    path: '/online',
     element: (
       <>
         <NavBar />

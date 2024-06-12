@@ -5,8 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import ProfileDrawer from './ProfileDashboard';
 import './NavBar.css';
 
+interface NavBarProps {
+  hideProfileDashboard?: boolean;
+}
+
 // see https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
-function NavBar() {
+function NavBar({ hideProfileDashboard = false}: NavBarProps) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const navigate = useNavigate();
@@ -19,18 +23,6 @@ function NavBar() {
     setAnchorElNav(null);
   };
 
-  const handleClickHome = (): void => {
-    navigate('/home');
-  }
-
-  const handleClickPlay = (): void => {
-    navigate("/play");
-  }
-
-  const handleClickSettings = (): void => {
-    navigate("/settings");
-  }
-
   return (
     <div>
       <AppBar position="fixed">
@@ -38,13 +30,16 @@ function NavBar() {
 
           {/* Default Toolbar/Buttons for wide enough windows */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button key="Home" onClick={handleClickHome} color='inherit'>
+            <Button key="Home" onClick={() => navigate("/home")} color='inherit'>
               <Typography>Home</Typography>
             </Button>
-            <Button key="Play" onClick={handleClickPlay} color='inherit'>
-              <Typography>Play</Typography>
+            {/* <Button key="Play Local" onClick={() => navigate("/local")} color='inherit'>
+              <Typography>Play Local</Typography>
             </Button>
-            <Button key="Settings" onClick={handleClickSettings} color='inherit'>
+            <Button key="Play Online" onClick={() => navigate("/online")} color='inherit'>
+              <Typography>Play Online</Typography>
+            </Button> */}
+            <Button key="Settings" onClick={() => navigate("/settings")} color='inherit'>
               <Typography>Settings</Typography>
             </Button>
           </Box>
@@ -61,20 +56,24 @@ function NavBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
             >
-              <MenuItem key="Home" onClick={handleClickHome}>
+              <MenuItem key="Home" onClick={() => navigate("/home")}>
                 <Typography>Home</Typography>
               </MenuItem>
-              <MenuItem key="Play" onClick={handleClickPlay}>
-                <Typography>Play</Typography>
+              {/* <MenuItem key="Play Local" onClick={() => navigate("/local")}>
+                <Typography>Play Local</Typography>
               </MenuItem>
-              <MenuItem key="Settings" onClick={handleClickSettings}>
+              <MenuItem key="Play Online" onClick={() => navigate("/online")}>
+                <Typography>Play Online</Typography>
+              </MenuItem> */}
+              <MenuItem key="Settings" onClick={() => navigate("/setting")}>
                 <Typography>Settings</Typography>
               </MenuItem>
             </Menu>
           </Box>
 
           {/* Moved profile-related stuff to new component */}
-          <ProfileDrawer />
+          {/* Render based on hideProfileDashboard */}
+          {!hideProfileDashboard && <ProfileDrawer />}
 
         </Toolbar>
       </AppBar>

@@ -15,10 +15,11 @@ model User {
   GameAsPlayer1     Game[]            @relation(name: "player_1")
   GameAsPlayer2     Game[]            @relation(name: "player_2")
   GameAsWinner      Game[]            @relation(name: "winner")
-  set_a             Boolean           @default(true)
-  set_b             Boolean           @default(true)
-  set_c             Boolean           @default(false)
-  set_d             String            @default("")
+  showTooltips      Boolean           @default(true)
+  darkMode          Boolean           @default(true)
+  gender_min        Float             @default(40)
+  gender_max        Float             @default(60)
+  human             Float             @default(50)
 }
 
 model Game {
