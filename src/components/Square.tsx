@@ -15,6 +15,8 @@ interface Props {
     handleMove: (start: number, end: number) => void
 }
 
+// .currentTarget is always square
+// .target is square or piece if there is one
 
 function Square({ black, position, handleMove, children } : PropsWithChildren<Props>) {
 
@@ -44,9 +46,16 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
     const handleDoubleClick = (e: React.MouseEvent): void => {
         // TODO: find and highlight all valid positions of current piece
         // this might break touch dragging functionality, which currently relies on a double click
-        // axios.get("/api/???").then().catch();
+        const index: string|null = e.currentTarget.getAttribute("data-position");
+        const target = e.target as HTMLElement;
+        if (target.classList.contains("piece"))
+            axios.post("/api/possible_moves", { index })
+            .then()
+            .catch();
+
         console.log("clickety-click!");
-        console.log(e.currentTarget);
+        console.log(e.target);
+        console.log(index);
     }
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {

@@ -23,16 +23,19 @@ app.post("/api/validate_move", (req: Request, res: Response): void => {
     // TODO: send response with value true/false
 
     // transform list index to matrix index
-    // TODO: INCORRECT, FIX +-1
-
-    req.body = { start: 5, end: 34 }
-
     req.body.start = [~~(req.body.start / 8), (req.body.start % 8)];
     req.body.end = [~~(req.body.end / 8), (req.body.end % 8)];
     console.log(req.body);
 
     // mock
     res.send(true);
+});
+
+app.post("/api/possible_moves", (req: Request, res: Response): void => {
+    const index = req.body.index;
+    console.log(index);
+
+    res.send();
 });
 
 app.use("/api/user", userRouter);
