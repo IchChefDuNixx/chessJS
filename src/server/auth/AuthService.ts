@@ -9,7 +9,9 @@ class AuthService {
 
     async login(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
         // get user from db
-        const user = await this.userService.getUserPassword(username);
+        const result = await this.userService.getUserPassword(username);
+        const user = result.data;
+
         if (!user)
             return { "status": 400, "message": "User not found", "accessToken": "" };
 
@@ -33,17 +35,18 @@ class AuthService {
 
     async register(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
         // check if user exists
-        if (await this.userService.getUser(username))
+        if ((await this.userService.getUser(username)).data)
             return { "status": 400, "message": "User already exists", "accessToken": "" };
 
         // hash password
         const password_hash = await bycrypt.hash(password, 10);
 
         // create user
-        const newUser = await this.userService.createUser({
+        const result = await this.userService.createUser({
             username: username,
             password: password_hash
         });
+        const newUser = result.data;
         if (!newUser)
             return { "status": 200, "message": "User creation failed", "accessToken": "" };
 

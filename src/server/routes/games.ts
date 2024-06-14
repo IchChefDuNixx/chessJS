@@ -22,4 +22,11 @@ router.post("/", async (req: Request, res: Response) => {
     res.send({ ...newGame });
 });
 
+// Delete game
+router.delete("/", async (req: Request, res: Response) => {
+    const newGame = await gameService.deleteGame(req.body.id);
+    res.send({ ...newGame });
+});
+
+
 export default router;

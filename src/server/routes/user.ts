@@ -11,10 +11,10 @@ import AuthService from "../auth/AuthService";
     No checking of request body or params yet. (E.g whether req.body matches the required type)
 */
 
-
 const router = express.Router();
 const userService = new UserService();
 const authService = new AuthService(userService);
+
 
 // Only used for logging
 router.use(logger);
@@ -37,36 +37,36 @@ router.use(authenticate);
 // Get user
 router.get("/", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;  // user is added to the request by authentication middleware
-    const user = await userService.getUser(authUser?.username);
-    res.send({ ...user });
+    const result = await userService.getUser(authUser?.username);
+    res.status(result.status).send({ ...result.data });
 });
 
 // Update user
 router.put("/", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;
-    const updatedUser = await userService.updateUser(authUser?.username, req.body.data);
-    res.send({ ...updatedUser });
+    const result = await userService.updateUser(authUser?.username, req.body.data);
+    res.status(result.status).send({ ...result.data });
 });
 
 // Get user settings
 router.get("/settings", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;
-    const settings = await userService.getUserSettings(authUser?.username);
-    res.send({ ...settings });
+    const result = await userService.getUserSettings(authUser?.username);
+    res.status(result.status).send({ ...result.data });
 })
 
 // Change user settings
 router.put("/settings", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;
-    const updatedSettings = await userService.updateUserSettings(authUser?.username, req.body.data);
-    res.send({ ...updatedSettings });
+    const result = await userService.updateUserSettings(authUser?.username, req.body.data);
+    res.status(result.status).send({ ...result.data });
 });
 
 // Get user profile
 router.get("/profile", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;
-    const profile = await userService.getUserProfile(authUser?.username);
-    res.send({ ...profile });
+    const result = await userService.getUserProfile(authUser?.username);
+    res.status(result.status).send({ ...result.data });
 });
 
 function logger(req: Request, res: Response, next: NextFunction) {

@@ -1,33 +1,41 @@
 import { CreateGame } from "../model.types";
 import { Game } from "@prisma/client";
 
-import prisma from "./PrismaService";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import prisma, {PrismaServiceResponse, handleError} from "./PrismaService";
+
 
 
 class GameService {
 
-    handleError(err: any): null {
-        if (err instanceof PrismaClientKnownRequestError) {
-            console.log(err.message)
-        } else {
-            console.log(err);
+    async getGames(): Promise<PrismaServiceResponse<Game[]|null>> {
+        try{
+            const games = await prisma.game.findMany();
+            return {status: 200, data: games};
+            
+        } catch (err) {
+            return handleError(err);
         }
-        return null
     }
 
-    async getGames(): Promise<Game[]> {
-        const games = await prisma.game.findMany();
-        return games;
-    }
-
-    async createGame(data: CreateGame): Promise<Game|null> {
+    async createGame(data: CreateGame): Promise<PrismaServiceResponse<Game|null>> {
         try {
             const newGame = await prisma.game.create({ data: data });
-            return newGame;
+            return {status: 200, data: newGame};
     
         } catch (err) {
-            return this.handleError(err);
+            return handleError(err);
+        }
+    }
+
+    async deleteGame(id: number) : Promise<PrismaServiceResponse<Game|null>> {
+        try {
+            const deletedGame = await prisma.game.delete({
+                where: {id: id}
+            });
+            return {status: 200, data: deletedGame};
+    
+        } catch (err) {
+            return handleError(err);
         }
     }
 }
