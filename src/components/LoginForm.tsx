@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import axios from 'axios';
 import { Login } from '../server/prisma/model.types';
+import RandomLogo from './RandomLogo';
   
 
 function LoginForm() {
@@ -25,15 +26,27 @@ function LoginForm() {
     // TODO: Add register button.
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ display: 'flex', gap: 5 , flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between',  gap: 5}} >
-                    <label >Username</label>
-                    <input {...register("username")} type="text" name="username"/>
+            <Box sx={{ 
+                display: 'flex', 
+                gap: 5, 
+                flexDirection: 'column', 
+                backgroundColor: '#216f7d', 
+                borderRadius: '10px', // Adjust the radius as needed
+                margin: 5, // Adjust the margin as needed
+                height: '250px',
+                justifyContent: 'center',
+                width: '350px'
+                
+            }}>
+                <RandomLogo /> {/* Render the RandomLogo component */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >
+                    <label>Username</label>
+                    <input {...register("username")} type="text" name="username" />
                 </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 5}} >
+                <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >
                     <label>Password</label>
-                    <input {...register("password")} type="text" name="password"/>
+                    <input {...register("password")} type="text" name="password" />
                 </Box>
 
                 <button type="submit">Submit</button>

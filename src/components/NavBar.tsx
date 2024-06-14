@@ -25,8 +25,8 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
 
   return (
     <div>
-      <AppBar position="fixed">
-        <Toolbar>
+      <AppBar sx={{ bgcolor: "#216f7d" }}position="fixed">
+        <Toolbar className='toolbar'>
 
           {/* Default Toolbar/Buttons for wide enough windows */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
