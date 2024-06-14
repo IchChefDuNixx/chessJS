@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import UserService from "../prisma/services/UserService";
 import { authenticate, AuthRequest } from "../auth/AuthMiddleware";
 import AuthService from "../auth/AuthService";
+import fileUpload from "express-fileupload";
 
 
 /*
@@ -10,6 +11,8 @@ import AuthService from "../auth/AuthService";
     Return values are null if either an error occurred or no matching value was found in the database.
     No checking of request body or params yet. (E.g whether req.body matches the required type)
 */
+
+const uploadDir = "src/uploads/";
 
 const router = express.Router();
 const userService = new UserService();
@@ -67,6 +70,25 @@ router.get("/profile", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;
     const result = await userService.getUserProfile(authUser?.username);
     res.status(result.status).send({ ...result.data });
+});
+
+// Upload profile picture
+router.post("/upload", fileUpload(), (req: AuthRequest, res: Response) => {
+    if (!req.files)
+        return res.status(400).send("No file received!");
+
+    const image = req.files.image;
+    
+    if (Array.isArray(image))
+        return res.status(400).send("Received more than one image!");
+
+    const username = req.user?.username;
+    const date = new Date().getTime();
+    const [type, subtype] = image.mimetype.split("/");
+    const image_name = username + "_" + date + "." + subtype;
+
+    image.mv(uploadDir + image_name);
+    res.send({profile_picture: uploadDir + image_name});
 });
 
 function logger(req: Request, res: Response, next: NextFunction) {
