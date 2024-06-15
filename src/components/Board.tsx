@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Square from "./Square";
 import Piece from "./Piece";
 import "./Board.css";
@@ -6,31 +6,27 @@ import axios from "axios";
 import useWebSocket from 'react-use-websocket';
 
 const initialBoard: string[] = [
-  "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
+  "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
   "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
   "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "",
   "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
-  "rook_w", "knight_w", "bishop_w", "king_w", "queen_w", "bishop_w", "knight_w", "rook_w"
-];
-
-// Not sure if this belongs here but we might need it for proper movement logic
-const alphanumericBoard: string[] = [
-'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',
-'a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7',
-'a6', 'b6', 'c6', 'd6', 'e6', 'f6', 'g6', 'h6',
-'a5', 'b5', 'c5', 'd5', 'e5', 'f5', 'g5', 'h5',
-'a4', 'b4', 'c4', 'd4', 'e4', 'f4', 'g4', 'h4',
-'a3', 'b3', 'c3', 'd3', 'e3', 'f3', 'g3', 'h3',
-'a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2',
-'a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1'
+  "rook_w", "knight_w", "bishop_w", "queen_w", "king_w", "bishop_w", "knight_w", "rook_w"
 ];
 
 function Board() {
     const [reversed, setReversed] = useState(false);
-    const { sendJsonMessage, lastJsonMessage } = useWebSocket("ws://localhost:8173", {
+    
+    const [username, setUsername] = useState(null);
+    useEffect(() => {
+        const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
+        axios.get("/api/user/profile", config)
+            .then(response => setUsername(response.data.username))
+            .catch()
+    }, []);
+    const { sendJsonMessage, lastJsonMessage } = useWebSocket(`ws://localhost:8173?username=${username}`, {
         onOpen: () => console.log('WebSocket connection established.'),
         //Will attempt to reconnect on all close events, such as server shutting down
         shouldReconnect: (closeEvent) => true,
