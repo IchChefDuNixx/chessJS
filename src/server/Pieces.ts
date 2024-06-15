@@ -51,26 +51,38 @@ class Piece {
     }
 
     // Horizontal + Vertical
-    public static getOrthogonalMoves(x: number, y: number): number[][] {
-        const moveSet: number[][] = [];
+    public static getOrthogonalMoves(x: number, y: number): {[key: string]: number[][]} {
+        const moveSet: {[key: string]: number[][]} = {
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": []
+        };
+        // Horizontal and vertical moves
         for (let i = 1; i < 8; i++) {
-            if (Piece.isInBounds(x + i, y)) moveSet.push([x + i, y]);
-            if (Piece.isInBounds(x - i, y)) moveSet.push([x - i, y]);
-            if (Piece.isInBounds(x, y + i)) moveSet.push([x, y + i]);
-            if (Piece.isInBounds(x, y - i)) moveSet.push([x, y - i]);
+            if (Piece.isInBounds(x + i, y)) moveSet["right"].push([x + i, y]);
+            if (Piece.isInBounds(x - i, y)) moveSet["left"].push([x - i, y]);
+            if (Piece.isInBounds(x, y + i)) moveSet["up"].push([x, y + i]);
+            if (Piece.isInBounds(x, y - i)) moveSet["down"].push([x, y - i]);
         }
         return moveSet;
     }
 
-    public static getDiagonalMoves(x: number, y: number): number[][] {
-        const moveSet: number[][] = [];
+    public static getDiagonalMoves(x: number, y: number): {[key: string]: number[][]} {
+        const moveSet: {[key: string]: number[][]} = {
+            "up-left": [],
+            "up-right": [],
+            "down-left": [],
+            "down-right": []
+        };
+        // Diagonal moves
         for (let i = 1; i < 8; i++) {
-            if (Piece.isInBounds(x + i, y + i)) moveSet.push([x + i, y + i]);
-            if (Piece.isInBounds(x - i, y + i)) moveSet.push([x - i, y + i]);
-            if (Piece.isInBounds(x + i, y - i)) moveSet.push([x + i, y - i]);
-            if (Piece.isInBounds(x - i, y - i)) moveSet.push([x - i, y - i]);
+            if (Piece.isInBounds(x + i, y + i)) moveSet["up-right"].push([x + i, y + i]);
+            if (Piece.isInBounds(x - i, y + i)) moveSet["up-left"].push([x - i, y + i]);
+            if (Piece.isInBounds(x + i, y - i)) moveSet["down-right"].push([x + i, y - i]);
+            if (Piece.isInBounds(x - i, y - i)) moveSet["down-left"].push([x - i, y - i]);
         }
-        return moveSet;
+        return moveSet
     }
 }
 
@@ -81,16 +93,16 @@ class Pawn extends Piece {
 
     //Capturing movement logic is missing
     public getPossibleMoves(): number[][] {
-        let moveSet: number[][] = [];
-        if(this.color == 'b' && Piece.isInBounds(this.X, this.Y + 1)) {
+        const moveSet: number[][] = [];
+        if (this.color == 'b' && Piece.isInBounds(this.X, this.Y + 1)) {
             moveSet.push([this.X, this.Y+1]);
-            if(this.hasMoved == false && Piece.isInBounds(this.X, this.Y + 2)) {
+            if (this.hasMoved == false && Piece.isInBounds(this.X, this.Y + 2)) {
                 moveSet.push([this.X, this.Y+2]);
             }
         } else {
-            if(Piece.isInBounds(this.X, this.Y - 1)) {
+            if (Piece.isInBounds(this.X, this.Y - 1)) {
                 moveSet.push([this.X, this.Y-1]);
-                if(this.hasMoved == false  && Piece.isInBounds(this.X, this.Y - 2)) {
+                if (this.hasMoved == false  && Piece.isInBounds(this.X, this.Y - 2)) {
                     moveSet.push([this.X, this.Y-2]);
                 }
             }
@@ -106,25 +118,15 @@ class Knight extends Piece {
 
     public getPossibleMoves(): number[][] {
         let moveSet: number[][] = [];
-        if(Piece.isInBounds(this.X+2, this.Y+1)){moveSet.push([this.X+2, this.Y+1])}
-        if(Piece.isInBounds(this.X+2, this.Y-1)){moveSet.push([this.X+2, this.Y-1])}
-        if(Piece.isInBounds(this.X+1, this.Y-2)){moveSet.push([this.X+1, this.Y-2])}
-        if(Piece.isInBounds(this.X+1, this.Y+2)){moveSet.push([this.X+1, this.Y+2])}
-        if(Piece.isInBounds(this.X-1, this.Y-2)){moveSet.push([this.X-1, this.Y-2])}
-        if(Piece.isInBounds(this.X-1, this.Y+2)){moveSet.push([this.X-1, this.Y+2])}
-        if(Piece.isInBounds(this.X-2, this.Y+1)){moveSet.push([this.X-2, this.Y+1])}
-        if(Piece.isInBounds(this.X-2, this.Y-1)){moveSet.push([this.X-2, this.Y-1])}
+        if (Piece.isInBounds(this.X+2, this.Y+1)){moveSet.push([this.X+2, this.Y+1])}
+        if (Piece.isInBounds(this.X+2, this.Y-1)){moveSet.push([this.X+2, this.Y-1])}
+        if (Piece.isInBounds(this.X+1, this.Y-2)){moveSet.push([this.X+1, this.Y-2])}
+        if (Piece.isInBounds(this.X+1, this.Y+2)){moveSet.push([this.X+1, this.Y+2])}
+        if (Piece.isInBounds(this.X-1, this.Y-2)){moveSet.push([this.X-1, this.Y-2])}
+        if (Piece.isInBounds(this.X-1, this.Y+2)){moveSet.push([this.X-1, this.Y+2])}
+        if (Piece.isInBounds(this.X-2, this.Y+1)){moveSet.push([this.X-2, this.Y+1])}
+        if (Piece.isInBounds(this.X-2, this.Y-1)){moveSet.push([this.X-2, this.Y-1])}
         return moveSet;
-    }
-}
-
-class Rook extends Piece {
-    constructor(props: Omit<PieceProps, "type"|"hasMoved">) {
-        super({ ...props, type: 'rook', hasMoved: false });
-    }
-
-    public getPossibleMoves(): number[][] {
-        return Piece.getDiagonalMoves(this.X, this.Y);
     }
 }
 
@@ -133,7 +135,17 @@ class Bishop extends Piece {
         super({ ...props, type: 'bishop', hasMoved: false });
     }
 
-    public getPossibleMoves(): number[][] {
+    public getPossibleMoves(): {[key: string]: number[][]} {
+        return Piece.getDiagonalMoves(this.X, this.Y);
+    }
+}
+
+class Rook extends Piece {
+    constructor(props: Omit<PieceProps, "type"|"hasMoved">) {
+        super({ ...props, type: 'rook', hasMoved: false });
+    }
+
+    public getPossibleMoves(): {[key: string]: number[][]} {
         return Piece.getOrthogonalMoves(this.X, this.Y);
     }
 }
@@ -143,8 +155,8 @@ class Queen extends Piece {
         super({ ...props, type: 'queen', hasMoved: false });
     }
 
-    public getPossibleMoves(): number[][] {
-        return Piece.getOrthogonalMoves(this.X, this.Y).concat(Piece.getDiagonalMoves(this.X, this.Y));
+    public getPossibleMoves(): {[key: string]: number[][]} {
+        return {...Piece.getOrthogonalMoves(this.X, this.Y), ...Piece.getDiagonalMoves(this.X, this.Y)}         
     }
 }
 
@@ -161,10 +173,10 @@ class King extends Piece {
             [1, 1], [-1, -1], [1, -1], [-1, 1]
         ];
         for (const [newX, newY] of kingMoves) {
-            if (Piece.isInBounds(newX, newY)) moveSet.push([newX, newY]);
+            if (Piece.isInBounds(newX, newY)) moveSet.push([this.X + newX, this.Y + newY]);
         }
         return moveSet;
     }
 }
 
-export {Bishop, King, Knight, Pawn, Piece, Queen, Rook};
+export {Bishop, King, Knight, Pawn, Piece, type PieceType, Queen, Rook};

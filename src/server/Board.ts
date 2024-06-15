@@ -1,4 +1,4 @@
-import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
+import { Bishop, King, Knight, Pawn, Piece, type PieceType, Queen, Rook } from './Pieces';
 
 class Board {
     private board: (Piece | null)[][];
@@ -68,6 +68,54 @@ class Board {
         this.board = this.createInitialBoard();
     }
 
+    // what is a trace?
+    // public getTrace(piece: Piece): Set<[number,number]> {
+    public getTrace(x: number,y: number): Set<[number,number]> {
+        const piece = this.board[x][y];
+        const returnSet = new Set<[number,number]>();
+        // Trace of pawn
+        if (piece.getType() == 'pawn') {
+            const moves = piece.getPossibleMoves(piece.X, piece.Y)
+            for (const [x,y] of moves) {
+                if (this.board[x][y] == null) {
+                    returnSet.add([x,y]);
+                } else { break }
+            }
+        // Trace for knight and king
+        } else if (piece.getType() == 'knight' || piece.getType() == 'king') {
+            const moves = piece.getPossibleMoves(piece.X, piece.Y);
+            for (const [x,y] of moves) {
+                if (this.board[x][y]) {
+                    if ((this.board[x][y] as Piece).getColor() != piece.getColor()) {
+                        returnSet.add([x,y]);
+                        break;
+                    }
+                } else {
+                    returnSet.add([x,y]);
+                }
+            }
+        // Trace of Rook, Bishop, Queen
+        } else {
+            for (const [key, value] of piece.getPossibleMoves()) {
+                for (const [x,y] of value) {
+                    if (this.board[x][y]) {
+                        if ((this.board[x][y] as Piece).getColor() != piece.getColor()) {
+                            returnSet.add(value);
+                            break;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        returnSet.add(value);
+                    }
+                }
+            }
+
+        }
+        return returnSet;
+    }
+
+
     //Not super sure about this!
     public setPieceOnBoard(startX: number, startY: number, endX: number, endY: number): void {
       const piece = this.board[startX][startY];
@@ -84,4 +132,4 @@ class Board {
 }
 
 
-export { Board };
+export default Board;

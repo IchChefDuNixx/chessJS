@@ -1,9 +1,13 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
+import url from "url";
 import ViteExpress from "vite-express";
 import WebSocket, { WebSocketServer } from "ws";
+
 import userRouter from "./routes/user.ts";
 import gameRouter from "./routes/games.ts";
+import Board from "./Board.ts";
+
 
 // console logs in here end up in the terminal hosting the server, not the browser
 
@@ -18,24 +22,34 @@ app.get("/api/hello", (_: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
+const currGame = new Board();
 app.post("/api/validate_move", (req: Request, res: Response): void => {
     // TODO: import and call game logic function
     // TODO: send response with value true/false
 
     // transform list index to matrix index
-    req.body.start = [~~(req.body.start / 8), (req.body.start % 8)];
-    req.body.end = [~~(req.body.end / 8), (req.body.end % 8)];
-    console.log(req.body);
+    const start = [~~(req.body.start / 8), (req.body.start % 8)];
+    const end = [~~(req.body.end / 8), (req.body.end % 8)];
+    console.log(start, end);
 
-    // mock
-    res.send(true);
+    if (currGame.validateMove(start, end, actor)) {
+        currGame.movePiece(start, end);
+        res.status(200).send(true);
+    } else {
+        res.status(200).send(false);
+    }
 });
 
 app.post("/api/possible_moves", (req: Request, res: Response): void => {
-    const index = req.body.index;
+    const index = [~~(req.body.index / 8), (req.body.index % 8)];
     console.log(index);
+    console.log("haha");
+    res.send(currGame.getTrace(index));
+});
 
-    res.send();
+app.post("/api/restart_game", (_: Request, res: Response): void => {
+    currGame.resetBoard();
+    res.status(200).send();
 });
 
 app.use("/api/user", userRouter);
@@ -82,11 +96,16 @@ const server = app.listen(8173, () => {
     console.log("WebSocket server is running on port 8173");
 });
 const wss = new WebSocketServer({ server });
-wss.on("connection", function(connection) { // export this to the login component?
+wss.on("connection", (connection, req) => { // export this to the login component?
     console.log("Received a new connection");
+
+    const username = url.parse(req.url, true).query.username;
+    if (!username || username == "null" || typeof username != "string") {
+        console.log("hehehe");
+        return
+    }
+
     connection.send(JSON.stringify({board: currentBoard}));
-    // TODO: how to get username?
-    const username: string = "asd";
     console.log(`player ${username} joined.`);
 
     // reconnect logic
@@ -117,6 +136,7 @@ wss.on("connection", function(connection) { // export this to the login componen
                 client => client.username != username
             );
             delete roles[username];
+            // TODO: close all connections when game is finished
         }
     });
 });

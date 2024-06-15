@@ -50,12 +50,12 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
         const target = e.target as HTMLElement;
         if (target.classList.contains("piece"))
             axios.post("/api/possible_moves", { index })
-            .then()
-            .catch();
+            .then(response => {console.log("ahah"); console.log(response)})
+            .catch(response => {console.log("ahdsfgdhah"); console.log(response)});
 
         console.log("clickety-click!");
-        console.log(e.target);
-        console.log(index);
+        // console.log(e.target);
+        // console.log(index);
     }
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
