@@ -44,19 +44,26 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
     }
 
     const handleDoubleClick = (e: React.MouseEvent): void => {
-        // TODO: find and highlight all valid positions of current piece
-        // this might break touch dragging functionality, which currently relies on a double click
-        const index: string|null = e.currentTarget.getAttribute("data-position");
         const target = e.target as HTMLElement;
-        if (target.classList.contains("piece"))
-            axios.post("/api/possible_moves", { index })
-            .then(response => {console.log("ahah"); console.log(response)})
-            .catch(response => {console.log("ahdsfgdhah"); console.log(response)});
+        const index: string = e.currentTarget.getAttribute("data-position")!;
 
-        console.log("clickety-click!");
-        // console.log(e.target);
-        // console.log(index);
-    }
+        if (target.classList.contains('piece')) {
+          axios.post('/api/possible_moves', { index })
+           .then(response => hightlightMoves(response.data, target.parentNode!.parentNode!.children))
+           .catch(error => console.error('Error (from square.tsx):', error));
+        }
+        console.log('clickety-click!');
+    };
+
+    const hightlightMoves = (indexes: number[], squares: HTMLCollection) => {
+        for (const square of squares) {
+            if (indexes.includes(Number(square.getAttribute('data-position')))) {
+                square.classList.add('selected');
+            } else {
+                square.classList.remove('selected');
+            }
+        }
+    };
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
         // cleanup touch remains, this is the earliest possible point, for my surface at least
