@@ -42,7 +42,7 @@ class Piece {
         this.Y = newY;
     }
     
-    protected setHasMoved(): void {
+    public setHasMoved(): void {
         this.hasMoved = true;
     }
 
@@ -84,6 +84,10 @@ class Piece {
         }
         return moveSet
     }
+
+    public getPossibleMoves(): number[][] | {[key: string]: number[][]} {
+        return []; 
+    }
 }
 
 class Pawn extends Piece {
@@ -94,16 +98,16 @@ class Pawn extends Piece {
     //Capturing movement logic is missing
     public getPossibleMoves(): number[][] {
         const moveSet: number[][] = [];
-        if (this.color == 'b' && Piece.isInBounds(this.X, this.Y + 1)) {
-            moveSet.push([this.X, this.Y+1]);
-            if (this.hasMoved == false && Piece.isInBounds(this.X, this.Y + 2)) {
-                moveSet.push([this.X, this.Y+2]);
+        if (this.color == 'b' && Piece.isInBounds(this.X + 1, this.Y)) {
+            moveSet.push([this.X + 1, this.Y]);
+            if (this.hasMoved == false && Piece.isInBounds(this.X + 2, this.Y)) {
+                moveSet.push([this.X + 2, this.Y]);
             }
         } else {
-            if (Piece.isInBounds(this.X, this.Y - 1)) {
-                moveSet.push([this.X, this.Y-1]);
-                if (this.hasMoved == false  && Piece.isInBounds(this.X, this.Y - 2)) {
-                    moveSet.push([this.X, this.Y-2]);
+            if (Piece.isInBounds(this.X - 1, this.Y)) {
+                moveSet.push([this.X - 1, this.Y]);
+                if (this.hasMoved == false  && Piece.isInBounds(this.X - 2, this.Y)) {
+                    moveSet.push([this.X - 2, this.Y]);
                 }
             }
         }
@@ -173,7 +177,7 @@ class King extends Piece {
             [1, 1], [-1, -1], [1, -1], [-1, 1]
         ];
         for (const [newX, newY] of kingMoves) {
-            if (Piece.isInBounds(newX, newY)) moveSet.push([this.X + newX, this.Y + newY]);
+            if (Piece.isInBounds(this.X + newX, this.Y + newY)) moveSet.push([this.X + newX, this.Y + newY]);
         }
         return moveSet;
     }
