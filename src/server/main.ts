@@ -22,18 +22,18 @@ app.get("/api/hello", (_: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
+// for logic purposes
 const currGame = new Board();
 app.post("/api/validate_move", (req: Request, res: Response): void => {
     // TODO: import and call game logic function
     // TODO: send response with value true/false
 
     // transform list index to matrix index
-    const start = [~~(req.body.start / 8), (req.body.start % 8)];
-    const end = [~~(req.body.end / 8), (req.body.end % 8)];
-    console.log(start, end);
+    const [oldX, oldY] = [~~(req.body.start / 8), (req.body.start % 8)];
+    const [newX, newY] = [~~(req.body.end / 8), (req.body.end % 8)];
 
-    if (currGame.validateMove(start, end, actor)) {
-        currGame.movePiece(start, end);
+    if (currGame.isValidMove(oldX, oldY, newX, newY)) {
+        currGame.movePiece(oldX, oldY, newX, newY);
         res.status(200).send(true);
     } else {
         res.status(200).send(false);
@@ -41,10 +41,14 @@ app.post("/api/validate_move", (req: Request, res: Response): void => {
 });
 
 app.post("/api/possible_moves", (req: Request, res: Response): void => {
-    const index = [~~(req.body.index / 8), (req.body.index % 8)];
-    console.log(index);
-    console.log("haha");
-    res.send(currGame.getTrace(index));
+    const [x,y] = [~~(req.body.index / 8), (req.body.index % 8)];
+    const moves = currGame.getTrace(x,y);
+    console.log(moves);
+    const result = [];
+    for (const [x, y] of moves) {
+        result.push(8 * x + y);
+    }
+    res.status(200).send(result);
 });
 
 app.post("/api/restart_game", (_: Request, res: Response): void => {
@@ -69,16 +73,17 @@ type Client = { username: string, connection: WebSocket };
 type Players = { host?: Client , opponent?: Client, spectators: Client[] };
 const players: Players = { spectators: [] };
 
+// for rendering purposes
 let currentBoard: string[] = [
-    "rook_b", "knight_b", "bishop_b", "king_b", "queen_b", "bishop_b", "knight_b", "rook_b",
+    "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
     "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
     "", "", "", "", "", "", "", "",
     "", "", "", "", "", "", "", "",
     "", "", "", "", "", "", "", "",
     "", "", "", "", "", "", "", "",
     "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
-    "rook_w", "knight_w", "bishop_w", "king_w", "queen_w", "bishop_w", "knight_w", "rook_w"
-];
+    "rook_w", "knight_w", "bishop_w", "queen_w", "king_w", "bishop_w", "knight_w", "rook_w"
+    ];
 
 function handleMessage(message: string) { // string | Buffer
     const dataFromClient = JSON.parse(message);
@@ -101,7 +106,7 @@ wss.on("connection", (connection, req) => { // export this to the login componen
 
     const username = url.parse(req.url, true).query.username;
     if (!username || username == "null" || typeof username != "string") {
-        console.log("hehehe");
+        console.log("WebSocket connection accepted");
         return
     }
 
