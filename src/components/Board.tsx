@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
-import Square from "./Square";
-import Piece from "./Piece";
-import "./Board.css";
 import axios from "axios";
+import { Tooltip } from "@mui/material";
+import { useEffect, useState } from "react";
 import useWebSocket from 'react-use-websocket';
+
+import Piece from "./Piece";
+import Square from "./Square";
+import "./Board.css";
 
 const initialBoard: string[] = [
   "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
@@ -16,43 +18,75 @@ const initialBoard: string[] = [
   "rook_w", "knight_w", "bishop_w", "queen_w", "king_w", "bishop_w", "knight_w", "rook_w"
 ];
 
-function Board() {
-    const [reversed, setReversed] = useState(false);
-    
-    const [username, setUsername] = useState(null);
-    useEffect(() => {
-        const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
-        axios.get("/api/user/profile", config)
-            .then(response => setUsername(response.data.username))
-            .catch()
-    }, []);
-    const { sendJsonMessage, lastJsonMessage } = useWebSocket(`ws://localhost:8173?username=${username}`, {
-        onOpen: () => console.log('WebSocket connection established.'),
-        //Will attempt to reconnect on all close events, such as server shutting down
-        shouldReconnect: (closeEvent) => true,
-    });
-    // const [board, setBoard] = useState(initialBoard);
-    let board: string[] = lastJsonMessage?.board || initialBoard;
+// true = online game, false = local game
+interface BoardProps {
+    loginRequired?: boolean;
+}
 
+function Board({ loginRequired = false }: BoardProps) {
+    const [reversed, setReversed] = useState<boolean>(false);
+    const [url, setUrl] = useState<string|null>(null);
+    useEffect(() => {
+        if (loginRequired) {
+            const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
+            axios.get("/api/user/profile", config)
+               .then(response => {
+                    // automatically match http url with websocket url
+                    setUrl(`ws://${window.location.hostname}:8173?username=${response.data.username}`);
+                })
+                .catch(error => console.log("Something went wrong during mount"));
+        }
+    }, [loginRequired]);
+
+    let sendJsonMessage, lastJsonMessage;
+    if (loginRequired) {
+        ({ sendJsonMessage, lastJsonMessage } = useWebSocket(url, {
+            onOpen: () => console.log('WebSocket connection established.'),
+            // Will attempt to reconnect on all close events, such as server shutting down
+            shouldReconnect: (closeEvent) => true,
+        }));
+    } else {
+        sendJsonMessage = () => {};
+        lastJsonMessage = {};
+    }
+
+    // update board with data from websocket
+    const [board, setBoard] = useState<string[]>(lastJsonMessage?.board || initialBoard);
+    if (loginRequired) {
+        useEffect(() => {
+            setBoard(lastJsonMessage?.board || initialBoard);
+        }, [lastJsonMessage]);
+    }
+
+    // the move has to be checked by our chess model
     const handleMove = (start: number, end: number): void => {
-        // the move has to be checked by our chess model
+        axios.post("/api/validate_move", {start, end}) // add params for checking in this object
+       .then((response) => {
+            let is_valid_move: boolean = response.data;
+            if (is_valid_move) execute_move();
+        })
+       .catch(error => console.log("Something went wrong in handleMove()"));
+
         const execute_move = (): void => {
             const newBoard = [...board];
             const movedPiece = newBoard[start];
             newBoard[start] = "";
             newBoard[end] = movedPiece;
-            // setBoard(newBoard);
-            sendJsonMessage({board: newBoard});
+            loginRequired? sendJsonMessage({board: newBoard}) : setBoard(newBoard);
         };
+    };
 
-        axios.post("/api/validate_move", {start, end}) // add params for checking in this object
-            .then((response) => {
-                let is_valid_move: boolean = response.data;
-                if (is_valid_move) execute_move();
+
+    const handleRestartGame = ():void => {
+        axios.post("/api/restart_game")
+            .then(response => {
+                loginRequired ? sendJsonMessage({board: initialBoard}) : setBoard(initialBoard);
             })
-            .catch((error) => {
-                console.log("Something went wrong");
-            });
+            .catch(error => console.log("Something went wrong in handleRestartGame()"));
+    };
+
+    const handleSurrenderGame = (): void => {
+        // TODO local and server-side handling
     };
 
     const renderSquare = (piece: string, position: number) => {
@@ -78,15 +112,24 @@ function Board() {
     };
 
     const renderedBoard = board.map((piece, position) => renderSquare(piece, position));
-
     return(
         <>
             <div className="board" >
                 { reversed ? renderedBoard.reverse() : renderedBoard }
             </div>
             <div>
-                <button onClick={() => setReversed(!reversed)} > Reverse Board </button>
-                <button onClick={() => sendJsonMessage({board: initialBoard})}> Restart Game </button>
+                <Tooltip title="Rotate your view of the board">
+                    <button onClick={() => setReversed(!reversed)} > Reverse Board </button>
+                </Tooltip>
+                {loginRequired ? (
+                    <Tooltip title="Forfeit and leave the match">
+                        <button onClick={() => handleSurrenderGame()}> Surrender </button>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Reset the current board">
+                        <button onClick={() => handleRestartGame()}> Restart Game </button>
+                    </Tooltip>
+                )}
             </div>
         </>
     );

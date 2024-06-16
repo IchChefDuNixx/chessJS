@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <>
-        <StartMenu/>
+        <StartMenu />
       </>
     )
   },
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     path: '/home',
     element: (
       <>
-        <StartMenu/>
+        <StartMenu />
       </>
     )
   },
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     path: '/local',
     element: (
       <>
-        <NavBar hideProfileDashboard={true}/>
+        <NavBar hideProfileDashboard />
         <Board />
       </>
     )
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <NavBar />
-        <Board />
+        <Board loginRequired />
       </>
     )
   },
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <NavBar />
-        <SettingsMenu/>
+        <SettingsMenu />
       </>
     )
   },
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <NavBar />
-        <LoginForm/>
+        <LoginForm />
       </>
     )
   }

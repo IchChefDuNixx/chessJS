@@ -41,7 +41,7 @@ function LoginForm() {
                 <RandomLogo /> {/* Render the RandomLogo component */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >
                     <label>Username</label>
-                    <input {...register("username")} type="text" name="username" />
+                    <input {...register("username")} type="text" name="username" autoFocus />
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >

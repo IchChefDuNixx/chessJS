@@ -22,12 +22,8 @@ app.get("/api/hello", (_: Request, res: Response): void => {
     res.send("Hello from express!");
 });
 
-// for logic purposes
-const currGame = new Board();
+const currGame = new Board(); // for logic purposes
 app.post("/api/validate_move", (req: Request, res: Response): void => {
-    // TODO: import and call game logic function
-    // TODO: send response with value true/false
-
     // transform list index to matrix index
     const [oldX, oldY] = [~~(req.body.start / 8), (req.body.start % 8)];
     const [newX, newY] = [~~(req.body.end / 8), (req.body.end % 8)];
@@ -73,8 +69,7 @@ type Client = { username: string, connection: WebSocket };
 type Players = { host?: Client , opponent?: Client, spectators: Client[] };
 const players: Players = { spectators: [] };
 
-// for rendering purposes
-let currentBoard: string[] = [
+let currentBoard: string[] = [ // for rendering purposes
     "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
     "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
     "", "", "", "", "", "", "", "",
@@ -104,7 +99,7 @@ const wss = new WebSocketServer({ server });
 wss.on("connection", (connection, req) => { // export this to the login component?
     console.log("Received a new connection");
 
-    const username = url.parse(req.url, true).query.username;
+    const username = url.parse(req.url!, true).query.username;
     if (!username || username == "null" || typeof username != "string") {
         console.log("WebSocket connection accepted");
         return
