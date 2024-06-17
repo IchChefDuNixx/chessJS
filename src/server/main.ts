@@ -39,11 +39,7 @@ app.post("/api/validate_move", (req: Request, res: Response): void => {
 app.post("/api/possible_moves", (req: Request, res: Response): void => {
     const [x,y] = [~~(req.body.index / 8), (req.body.index % 8)];
     const moves = currGame.getTrace(x,y);
-    console.log(moves);
-    const result = [];
-    for (const [x, y] of moves) {
-        result.push(8 * x + y);
-    }
+    const result = moves.map(([x, y]) => 8 * x + y);
     res.status(200).send(result);
 });
 

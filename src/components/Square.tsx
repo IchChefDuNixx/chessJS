@@ -12,13 +12,14 @@ let holding: EventTarget & Element | null = null;
 interface Props {
     black: boolean,
     position: number,
-    handleMove: (start: number, end: number) => void
+    handleMove: (start: number, end: number) => void,
+    highlightMoves: (indeces: number[]) => void
 }
 
 // .currentTarget is always square
 // .target is square or piece if there is one
 
-function Square({ black, position, handleMove, children } : PropsWithChildren<Props>) {
+function Square({ black, position, handleMove, highlightMoves, children } : PropsWithChildren<Props>) {
 
     const handleMouseDown = (e: React.MouseEvent): void => {
         if (holding) holding.classList.remove("holding"); // clears old stuck class
@@ -49,20 +50,10 @@ function Square({ black, position, handleMove, children } : PropsWithChildren<Pr
 
         if (target.classList.contains('piece')) {
           axios.post('/api/possible_moves', { index })
-           .then(response => hightlightMoves(response.data, target.parentNode!.parentNode!.children))
+           .then(response => highlightMoves(response.data))
            .catch(error => console.error('Error (from square.tsx):', error));
         }
         console.log('clickety-click!');
-    };
-
-    const hightlightMoves = (indexes: number[], squares: HTMLCollection) => {
-        for (const square of squares) {
-            if (indexes.includes(Number(square.getAttribute('data-position')))) {
-                square.classList.add('selected');
-            } else {
-                square.classList.remove('selected');
-            }
-        }
     };
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {

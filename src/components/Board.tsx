@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useWebSocket from 'react-use-websocket';
 
 import Piece from "./Piece";
@@ -63,7 +63,7 @@ function Board({ loginRequired = false }: BoardProps) {
         axios.post("/api/validate_move", {start, end}) // add params for checking in this object
        .then((response) => {
             let is_valid_move: boolean = response.data;
-            if (is_valid_move) execute_move();
+            if (is_valid_move) { execute_move() };
         })
        .catch(error => console.log("Something went wrong in handleMove()"));
 
@@ -89,23 +89,36 @@ function Board({ loginRequired = false }: BoardProps) {
         // TODO local and server-side handling
     };
 
+    const highlightSquares = (indeces: number[]): void => {
+        const squares = document.getElementsByClassName("board")[0].children;
+        for (const square of squares) {
+            if (indeces.includes(Number(square.getAttribute('data-position')))) {
+                square.classList.add('selected');
+            } else {
+                square.classList.remove('selected');
+            }
+        }
+    };
+
     const renderSquare = (piece: string, position: number) => {
         // determine square color
         const row = Math.floor(position / 8);
         let black: boolean;
 
-        if (row % 2 === 0)
+        if (row % 2 === 0) {
             black = (position % 2 === 0) ? true : false;
-        else
+        } else {
             black = (position % 2 === 0) ? false : true;
+        }
 
         // empty square
-        if (piece === "")
-            return(<Square black={black} position={position} key={position} handleMove={handleMove} />);
+        if (piece === "") {
+            return(<Square black={black} position={position} key={position} handleMove={handleMove} highlightMoves={highlightSquares}/>);
+        }
 
         // square with piece
         return(
-            <Square black={black} position={position} key={position} handleMove={handleMove} >
+            <Square black={black} position={position} key={position} handleMove={handleMove} highlightMoves={highlightSquares}>
                 <Piece type={piece} />
             </Square>
         );
@@ -114,7 +127,7 @@ function Board({ loginRequired = false }: BoardProps) {
     const renderedBoard = board.map((piece, position) => renderSquare(piece, position));
     return(
         <>
-            <div className="board" >
+            <div className="board">
                 { reversed ? renderedBoard.reverse() : renderedBoard }
             </div>
             <div>
