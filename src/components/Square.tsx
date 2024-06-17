@@ -1,7 +1,8 @@
-import React from "react";
-import { PropsWithChildren } from "react";
-import "./Square.css";
 import axios from "axios";
+import React, { PropsWithChildren } from "react";
+
+import "./Square.css";
+
 
 // only used for touch "click" inputs
 let first: HTMLElement | null = null;

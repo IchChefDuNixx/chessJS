@@ -1,7 +1,7 @@
 import Board from "./Board";
 
-const createBoard = new Board();
 
+const createBoard = new Board();
 
 var turn = "w"
 
@@ -15,5 +15,3 @@ function setTurn(){}
 function getPossibleMove(){}
 
 function isPieceOnTile(){}
-
-

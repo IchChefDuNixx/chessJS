@@ -1,11 +1,13 @@
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
 import Board from './Board';
+import LoginForm from './LoginForm';
 import NavBar from './NavBar';
 import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
-import LoginForm from './LoginForm';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import './App.css';
+
 
 const router = createBrowserRouter([
   {

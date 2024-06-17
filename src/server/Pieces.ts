@@ -183,4 +183,4 @@ class King extends Piece {
     }
 }
 
-export {Bishop, King, Knight, Pawn, Piece, type PieceType, Queen, Rook};
+export {Bishop, King, Knight, Pawn, Piece, Queen, Rook};

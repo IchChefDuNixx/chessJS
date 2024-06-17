@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
+import React, { useState, useEffect } from 'react';
+
 import animationKnight from '../assets/Animation-knight.json';
+
 
 const generateRandomPosition = () => {
     const top = Math.floor(Math.random() * 80) + 5;

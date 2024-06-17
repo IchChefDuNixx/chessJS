@@ -1,9 +1,11 @@
-import React from 'react';
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import ProfileDrawer from './ProfileDashboard';
 import './NavBar.css';
+
 
 interface NavBarProps {
   hideProfileDashboard?: boolean;
@@ -33,12 +35,6 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
             <Button key="Home" onClick={() => navigate("/home")} color='inherit'>
               <Typography>Home</Typography>
             </Button>
-            {/* <Button key="Play Local" onClick={() => navigate("/local")} color='inherit'>
-              <Typography>Play Local</Typography>
-            </Button>
-            <Button key="Play Online" onClick={() => navigate("/online")} color='inherit'>
-              <Typography>Play Online</Typography>
-            </Button> */}
             <Button key="Settings" onClick={() => navigate("/settings")} color='inherit'>
               <Typography>Settings</Typography>
             </Button>
@@ -59,12 +55,6 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
               <MenuItem key="Home" onClick={() => navigate("/home")}>
                 <Typography>Home</Typography>
               </MenuItem>
-              {/* <MenuItem key="Play Local" onClick={() => navigate("/local")}>
-                <Typography>Play Local</Typography>
-              </MenuItem>
-              <MenuItem key="Play Online" onClick={() => navigate("/online")}>
-                <Typography>Play Online</Typography>
-              </MenuItem> */}
               <MenuItem key="Settings" onClick={() => navigate("/setting")}>
                 <Typography>Settings</Typography>
               </MenuItem>

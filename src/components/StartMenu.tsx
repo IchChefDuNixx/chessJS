@@ -1,10 +1,11 @@
-import './StartMenu2.css';
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import animationKnight from '../assets/Animation-knight.json';
 import animationRook from '../assets/Animation - Rook.json';
+import './StartMenu2.css';
 
 
 function StartMenu() {

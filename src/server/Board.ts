@@ -1,5 +1,6 @@
 import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
 
+
 class Board {
     private board: (Piece | null)[][];
 
@@ -81,6 +82,7 @@ class Board {
         // Trace of pawn
         if (piece.getType() === 'pawn') {
             const moves = piece.getPossibleMoves();
+            if (!Array.isArray(moves)) return [];
             for (const [moveX, moveY] of moves) {
                 //Empty Square -> allowed Move
                 if (this.board[moveX][moveY] === null) {
@@ -109,6 +111,7 @@ class Board {
         // Trace for knight and king
         } else if (piece.getType() === 'knight' || piece.getType() === 'king') {
             const moves = piece.getPossibleMoves();
+            if (!Array.isArray(moves)) return [];
             for (const [moveX, moveY] of moves) {
                 //Empty Square -> allowed Move
                 if (this.board[moveX][moveY] == null) {

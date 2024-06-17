@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs";
-import UserService from "../prisma/services/UserService";
+import jwt from "jsonwebtoken";
 
+import UserService from "../prisma/services/UserService";
 
 
 class AuthService {

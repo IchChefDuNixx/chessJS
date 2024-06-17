@@ -1,11 +1,12 @@
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useWebSocket from 'react-use-websocket';
 
 import Piece from "./Piece";
 import Square from "./Square";
 import "./Board.css";
+
 
 const initialBoard: string[] = [
   "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
@@ -34,7 +35,7 @@ function Board({ loginRequired = false }: BoardProps) {
                     // automatically match http url with websocket url
                     setUrl(`ws://${window.location.hostname}:8173?username=${response.data.username}`);
                 })
-                .catch(error => console.log("Something went wrong during mount"));
+                .catch(() => console.log("Something went wrong during mount"));
         }
     }, [loginRequired]);
 
@@ -43,7 +44,7 @@ function Board({ loginRequired = false }: BoardProps) {
         ({ sendJsonMessage, lastJsonMessage } = useWebSocket(url, {
             onOpen: () => console.log('WebSocket connection established.'),
             // Will attempt to reconnect on all close events, such as server shutting down
-            shouldReconnect: (closeEvent) => true,
+            shouldReconnect: () => true,
         }));
     } else {
         sendJsonMessage = () => {};
@@ -65,7 +66,7 @@ function Board({ loginRequired = false }: BoardProps) {
             let is_valid_move: boolean = response.data;
             if (is_valid_move) { execute_move() };
         })
-       .catch(error => console.log("Something went wrong in handleMove()"));
+       .catch(() => console.log("Something went wrong in handleMove()"));
 
         const execute_move = (): void => {
             const newBoard = [...board];
@@ -79,10 +80,10 @@ function Board({ loginRequired = false }: BoardProps) {
 
     const handleRestartGame = ():void => {
         axios.post("/api/restart_game")
-            .then(response => {
+            .then(() => {
                 loginRequired ? sendJsonMessage({board: initialBoard}) : setBoard(initialBoard);
             })
-            .catch(error => console.log("Something went wrong in handleRestartGame()"));
+            .catch(() => console.log("Something went wrong in handleRestartGame()"));
     };
 
     const handleSurrenderGame = (): void => {

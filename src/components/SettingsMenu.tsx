@@ -1,7 +1,9 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-// import './SettingsMenu.css';
-import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
 import axios from 'axios';
+import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
+import { ChangeEvent, useEffect, useState } from 'react';
+
+import './SettingsMenu.css';
+
 
 function SettingsMenu() {
   const [gender, setGender] = useState([40,60]);
@@ -67,14 +69,14 @@ function SettingsMenu() {
         />
       </FormGroup>
       <Divider />
-      <Typography>Gender</Typography>
+      <Typography> Gender </Typography>
       <Slider
         value={gender}
         min={0}
         max={300}
         step={0.01}
-        onChange={(_, newValues: number[]) => setGender(newValues)}
-        onChangeCommitted={(_, newValues: number) => handleSliderChange("gender", newValues)}
+        onChange={(_, newValues: number|number[]) => setGender(typeof newValues == "number" ? [newValues] : newValues)}
+        onChangeCommitted={(_, newValues: number|number[]) => handleSliderChange("gender", newValues)}
         marks={[
           { value: 100, label: "Female" },
           { value: 200, label: "Male"}
@@ -87,13 +89,13 @@ function SettingsMenu() {
           min={0}
           max={100}
           step={0.001}
-          onChange={(_, newValue: number) => setHuman(newValue)}
-          onChangeCommitted={(_, newValue: number) => handleSliderChange("human", newValue)}
+          onChange={(_, newValue: number|number[]) => setHuman(typeof newValue == "number" ? newValue : newValue[0])}
+          onChangeCommitted={(_, newValue: number|number[]) => handleSliderChange("human", newValue)}
           color='secondary'
           orientation='vertical'
           valueLabelDisplay='auto'
         />
-        <Typography>Human %</Typography>
+        <Typography> Human % </Typography>
       </Box>
     </div>
   );

@@ -4,9 +4,9 @@ import url from "url";
 import ViteExpress from "vite-express";
 import WebSocket, { WebSocketServer } from "ws";
 
-import userRouter from "./routes/user.ts";
-import gameRouter from "./routes/games.ts";
 import Board from "./Board.ts";
+import gameRouter from "./routes/games.ts";
+import userRouter from "./routes/user.ts";
 
 
 // console logs in here end up in the terminal hosting the server, not the browser

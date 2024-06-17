@@ -1,6 +1,8 @@
-import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, FaChessPawn } from "react-icons/fa";
 import { Tooltip, Zoom } from "@mui/material";
+import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, FaChessPawn } from "react-icons/fa";
+
 import "./Piece.css";
+
 
 interface Props {
     type: string

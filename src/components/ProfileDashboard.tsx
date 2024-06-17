@@ -1,8 +1,9 @@
-import React from "react";
-import './ProfileDashboard.css';
+import axios from "axios";
 import { Avatar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemText, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import axios from "axios";
+import React from "react";
+
+import './ProfileDashboard.css';
 
 
 const columns: GridColDef[] = [
@@ -50,9 +51,9 @@ function ProfileDashboard() {
 
 				// update profile picture in database
 				axios.put("api/user", { data: {profile_picture: profile_picture} }, config)
-					.catch(error => console.log("Database update failed!"));
+					.catch(() => console.log("Database update failed!"));
 			})
-			.catch(error => console.log("Image upload failed!"));
+			.catch(() => console.log("Image upload failed!"));
 	}
 
 	// initialize values at mount
@@ -68,7 +69,7 @@ function ProfileDashboard() {
 			const winrate: number = games_played ? Math.round(100*(games_won / games_played)) : 0;
 
 			setProfileStatistics({games_played, games_won, winrate});
-		}).catch((error) => {})
+		}).catch(() => {})
 	}, []); // <- This empty array is SUPER important
 
 	// Defines sx for profileData table.

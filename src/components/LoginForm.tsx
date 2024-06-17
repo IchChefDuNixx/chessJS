@@ -1,10 +1,11 @@
+import axios from 'axios';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
-import axios from 'axios';
-import { Login } from '../server/prisma/model.types';
+
 import RandomLogo from './RandomLogo';
-  
+import { type Login } from '../server/prisma/model.types';
+
 
 function LoginForm() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ function LoginForm() {
             // If login successful, store token and redirect to /home.
             sessionStorage.setItem("accessToken", response.data.accessToken);
             navigate("/home");
-        }).catch((error) => {
+        }).catch(() => {
             // Otherwise display response.data.message
             // TODO
         })
