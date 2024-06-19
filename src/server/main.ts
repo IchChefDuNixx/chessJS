@@ -74,7 +74,7 @@ let currentBoard: string[] = [ // for rendering purposes
     "", "", "", "", "", "", "", "",
     "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
     "rook_w", "knight_w", "bishop_w", "queen_w", "king_w", "bishop_w", "knight_w", "rook_w"
-    ];
+];
 
 function handleMessage(message: string) { // string | Buffer
     const dataFromClient = JSON.parse(message);

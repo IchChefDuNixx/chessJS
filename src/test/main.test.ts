@@ -1,0 +1,1 @@
+// https://github.com/mswjs/examples/tree/main/examples/with-vitest

@@ -1,19 +1,20 @@
 type PieceType = 'pawn' | 'knight' | 'bishop' | 'rook' | 'king' | 'queen';
 type PieceColor = 'w' | 'b';
+type BoardIndex = 0|1|2|3|4|5|6|7;
 
 interface PieceProps {
+    X: BoardIndex;
+    Y: BoardIndex;
     type: PieceType;
     color: PieceColor;
-    X: number;
-    Y: number;
     hasMoved: boolean;
 }
 
 class Piece {
+    X: BoardIndex;
+    Y: BoardIndex;
     type: PieceType;
     color: PieceColor;
-    X: number;
-    Y: number;
     hasMoved: boolean;
 
     constructor(props: PieceProps) {
@@ -33,15 +34,15 @@ class Piece {
     }
 
     // see whether list or dict would be better later on
-    public getPosition(): [number, number] {
+    public getPosition(): [BoardIndex, BoardIndex] {
         return [this.X, this.Y];
     }
 
-    protected setPosition(newX: number, newY: number): void {
+    protected setPosition(newX: BoardIndex, newY: BoardIndex): void {
         this.X = newX;
         this.Y = newY;
     }
-    
+
     public setHasMoved(): void {
         this.hasMoved = true;
     }
@@ -86,7 +87,7 @@ class Piece {
     }
 
     public getPossibleMoves(): number[][] | {[key: string]: number[][]} {
-        return []; 
+        return [];
     }
 }
 
@@ -160,7 +161,7 @@ class Queen extends Piece {
     }
 
     public getPossibleMoves(): {[key: string]: number[][]} {
-        return {...Piece.getOrthogonalMoves(this.X, this.Y), ...Piece.getDiagonalMoves(this.X, this.Y)}         
+        return {...Piece.getOrthogonalMoves(this.X, this.Y), ...Piece.getDiagonalMoves(this.X, this.Y)}
     }
 }
 
@@ -183,4 +184,4 @@ class King extends Piece {
     }
 }
 
-export {Bishop, King, Knight, Pawn, Piece, Queen, Rook};
+export { Bishop, type BoardIndex, King, Knight, Pawn, Piece, Queen, Rook };

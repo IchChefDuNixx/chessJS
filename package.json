@@ -7,7 +7,8 @@
     "dev": "npx prisma generate && nodemon -w src/server -x tsx src/server/main.ts",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -53,8 +54,10 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "msw": "^2.3.1",
     "typescript": "^5.4.5",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
   },
   "prisma": {
     "schema": "src/server/prisma/schema.prisma"

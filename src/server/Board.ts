@@ -1,4 +1,4 @@
-import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
+import {Bishop, type BoardIndex, King, Knight, Pawn, Piece, Queen, Rook} from './Pieces';
 
 
 class Board {
@@ -8,7 +8,7 @@ class Board {
         this.board = this.createInitialBoard();
     }
 
-    private createInitialBoard(): (Piece    | null)[][] {
+    private createInitialBoard(): (Piece | null)[][] {
         return [
             [
                 new Rook    ({ X: 0, Y: 0, color: "b" }),
@@ -72,12 +72,12 @@ class Board {
     }
 
     // Calculating the squares a given piece could move
-       public getTrace(x: number, y: number): number[][] {
+       public getTrace(x: BoardIndex, y: BoardIndex): BoardIndex[][] {
         if (this.board[x][y] === null) {
             return [];
         }
         const piece = this.board[x][y];
-        const returnArray: number[][] = [];
+        const returnArray: BoardIndex[][] = [];
 
         // Trace of pawn
         if (piece.getType() === 'pawn') {
@@ -183,7 +183,7 @@ class Board {
     }
 
     //Not super sure about this!
-    public movePiece(startX: number, startY: number, endX: number, endY: number): void {
+    public movePiece(startX: BoardIndex, startY: BoardIndex, endX: BoardIndex, endY: BoardIndex): void {
       const piece = this.board[startX][startY];
       if (piece) {
           // Remove the piece from its original position
