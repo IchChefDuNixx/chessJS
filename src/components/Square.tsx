@@ -50,9 +50,9 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         const index: string = e.currentTarget.getAttribute("data-position")!;
 
         if (target.classList.contains('piece')) {
-          axios.post('/api/possible_moves', { index })
-           .then(response => highlightMoves(response.data))
-           .catch(error => console.error('Error (from square.tsx):', error));
+            axios.post('/api/possible_moves', { index })
+                .then(response => highlightMoves(response.data))
+                .catch(error => console.error('Error (from square.tsx):', error));
         }
         console.log('clickety-click!');
     };
@@ -67,8 +67,9 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         const startSquare = e.currentTarget;
         const startPosition: string|null = startSquare.getAttribute("data-position");
         // startPosition should never be null, but just in case
-        if (startPosition)
+        if (startPosition) {
             e.dataTransfer.setData("startPosition", startPosition);
+        }
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
@@ -81,13 +82,16 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
-        if (holding) holding.classList.remove("holding");
+        if (holding) {
+            holding.classList.remove("holding");
+        }
         e.currentTarget.classList.remove("hovering");
         const startPosition: string = e.dataTransfer.getData("startPosition");
         const endPosition: string|null = e.currentTarget.getAttribute("data-position");
         // endPosition should never be null, but just in case
-        if (endPosition && (startPosition != endPosition))
+        if (endPosition && (startPosition != endPosition)) {
             handleMove(+startPosition, +endPosition);
+        }
     };
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
@@ -117,7 +121,7 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
                 handleMove(+startPosition, +endPosition);
 
             first.classList.remove("selected");
-            second.classList.remove("seleceted");
+            second.classList.remove("selected");
             first = second = null;
         }
     };

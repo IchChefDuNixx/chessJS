@@ -1,8 +1,9 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import Board from './Board';
-import LoginForm from './LoginForm';
+import LoginPage from './LoginPage';
 import NavBar from './NavBar';
+import RegisterPage from './RegisterPage';
 import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
 
@@ -58,7 +59,16 @@ const router = createBrowserRouter([
     element: (
       <>
         <NavBar />
-        <LoginForm />
+        <LoginPage />
+      </>
+    )
+  },
+  {
+    path: '/register',
+    element: (
+      <>
+        <NavBar />
+        <RegisterPage />
       </>
     )
   }

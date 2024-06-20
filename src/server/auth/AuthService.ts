@@ -12,17 +12,20 @@ class AuthService {
         const result = await this.userService.getUserPassword(username);
         const user = result.data;
 
-        if (!user)
+        if (!user) {
             return { "status": 400, "message": "User not found", "accessToken": "" };
+        }
 
         // check password
         const correct_password = await bycrypt.compare(password, user.password);
-        if (!correct_password)
+        if (!correct_password) {
             return { "status": 400, "message": "Authentication failed", "accessToken": "" };
+        }
 
         // create access token
-        if (!process.env.ACCESS_TOKEN_SECRET)
+        if (!process.env.ACCESS_TOKEN_SECRET) {
             throw new Error("Env variable not defined");
+        }
 
         const token = jwt.sign(
             { username: username},
@@ -35,8 +38,14 @@ class AuthService {
 
     async register(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
         // check if user exists
-        if ((await this.userService.getUser(username)).data)
+        if ((await this.userService.getUser(username)).data) {
             return { "status": 400, "message": "User already exists", "accessToken": "" };
+        }
+
+        // check if password is empty
+        if (password === "") {
+            return { "status": 400, "message": "Password cannot be empty", "accessToken": "" };
+        }
 
         // hash password
         const password_hash = await bycrypt.hash(password, 10);
@@ -47,9 +56,10 @@ class AuthService {
             password: password_hash
         });
         const newUser = result.data;
-        if (!newUser)
-            return { "status": 200, "message": "User creation failed", "accessToken": "" };
-
+        if (!newUser) {
+            return { "status": result.status, "message": "User creation failed", "accessToken": "" };
+        }
+        
         // automatically log in
         return this.login(username, password);
     }
