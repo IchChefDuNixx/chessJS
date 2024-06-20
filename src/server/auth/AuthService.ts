@@ -37,14 +37,19 @@ class AuthService {
     }
 
     async register(username: string, password: string): Promise<{status: number, message: string, accessToken: string}> {
-        // check if user exists
-        if ((await this.userService.getUser(username)).data) {
-            return { "status": 400, "message": "User already exists", "accessToken": "" };
+        // check if username is empty
+        if (username === "") {
+            return { "status": 400, "message": "You must provide a username", "accessToken": "" };
         }
 
         // check if password is empty
         if (password === "") {
             return { "status": 400, "message": "Password cannot be empty", "accessToken": "" };
+        }
+
+        // check if user exists
+        if ((await this.userService.getUser(username)).data) {
+            return { "status": 400, "message": "User already exists", "accessToken": "" };
         }
 
         // hash password
