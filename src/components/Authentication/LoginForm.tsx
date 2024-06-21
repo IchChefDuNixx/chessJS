@@ -36,7 +36,7 @@ function LoginForm( { action } : Props) {
     const { handleSubmit, register, reset } = useForm<Login>();
 
     const onSubmit = async (data: Login) => {
-        axios.post(`/api/user/${action}`, {...data}).then(response => {
+        axios.post(`/api/user/${action}`, {...data}).then(async response => {
             // Login or register was successful
 
             // Store token and username
@@ -46,7 +46,7 @@ function LoginForm( { action } : Props) {
             // Put user settings into app context
             if (settings && setSettings){
                 const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}};  // authentication
-                axios.get('/api/user/settings', config)
+                await axios.get('/api/user/settings', config)
                     .then((response) => {
                         const userSettings =  response.data;
                         setSettings(convertSettingsFormat(userSettings));
