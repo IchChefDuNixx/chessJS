@@ -29,13 +29,21 @@ function Board({ loginRequired = false }: BoardProps) {
     const [url, setUrl] = useState<string|null>(null);
     useEffect(() => {
         if (loginRequired) {
-            const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
-            axios.get("/api/user/profile", config)
-               .then(response => {
-                    // automatically match http url with websocket url
-                    setUrl(`ws://${window.location.hostname}:8173?username=${response.data.username}`);
-                })
-                .catch(() => console.log("Something went wrong during mount"));
+            const username = sessionStorage.username;   // using sessionStorage to avoid additional api call
+            if (!username) {
+                console.log("Login is required for online game!!");
+            }
+            else {
+                // automatically match http url with websocket url
+                setUrl(`ws://${window.location.hostname}:8173?username=${username}`);
+            }
+            // const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
+            // axios.get("/api/user/profile", config)
+            //    .then(response => {
+            //         // automatically match http url with websocket url
+            //         setUrl(`ws://${window.location.hostname}:8173?username=${response.data.username}`);
+            //     })
+            //     .catch(() => console.log("Something went wrong during mount"));
         }
     }, [loginRequired]);
 
