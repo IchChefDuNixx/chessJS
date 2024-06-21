@@ -1,14 +1,25 @@
+import React, { useState } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import Board from './Board';
-import LoginPage from './LoginPage';
+import LoginGuard from './Authentication/LoginGuard';
+import LoginPage from './Authentication/LoginPage';
+import RegisterPage from './Authentication/RegisterPage';
+import Board from './ChessBoard/Board';
 import NavBar from './NavBar';
-import RegisterPage from './RegisterPage';
 import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
 
 import './App.css';
 
+
+export type Settings = {
+  showTooltips: boolean,
+  darkMode: boolean,
+  gender: number[],
+  human: number
+}
+
+export const SettingsContext = React.createContext<{ settings?: Settings, setSettings?: (value: React.SetStateAction<Settings>) => void } >({});
 
 const router = createBrowserRouter([
   {
@@ -39,10 +50,10 @@ const router = createBrowserRouter([
   {
     path: '/online',
     element: (
-      <>
+      <LoginGuard>
         <NavBar />
         <Board loginRequired />
-      </>
+      </LoginGuard>
     )
   },
   {
@@ -58,7 +69,7 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <>
-        <NavBar />
+        <NavBar hideProfileDashboard/>
         <LoginPage />
       </>
     )
@@ -67,7 +78,7 @@ const router = createBrowserRouter([
     path: '/register',
     element: (
       <>
-        <NavBar />
+        <NavBar hideProfileDashboard/>
         <RegisterPage />
       </>
     )
@@ -75,7 +86,18 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [settings, setSettings] = useState({
+    showTooltips: false,
+    darkMode: false,
+    gender: [40, 60],
+    human: 50
+  });
+
+  return(
+    <SettingsContext.Provider value={{settings: settings, setSettings: setSettings}}>
+      <RouterProvider router={router}/>
+    </SettingsContext.Provider>
+  );
 }
 
 export default App;

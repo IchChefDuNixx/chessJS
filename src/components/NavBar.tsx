@@ -3,7 +3,7 @@ import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ProfileDrawer from './ProfileDashboard';
+import ProfileDrawer from './ProfileDashboard/ProfileDashboard';
 import './NavBar.css';
 
 
@@ -37,6 +37,9 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
             </Button>
             <Button key="Settings" onClick={() => navigate("/settings")} color='inherit'>
               <Typography>Settings</Typography>
+            </Button>
+            <Button key="Login" onClick={() => navigate("/login")} color='inherit'>
+              <Typography>Login</Typography>
             </Button>
           </Box>
 
