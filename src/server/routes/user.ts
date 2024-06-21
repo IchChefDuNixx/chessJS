@@ -37,6 +37,12 @@ router.post("/register", async (req: Request, res: Response) => {
 // Check authentication for everything apart from login and register.
 router.use(authenticate);
 
+// Check if user is logged in
+router.get("/logged_in", async (req: AuthRequest, res: Response) => {
+    const authUser = req.user;  // user is added to the request by authentication middleware
+    res.status(200).send({ username: authUser?.username });
+});
+
 // Get user
 router.get("/", async (req: AuthRequest, res: Response) => {
     const authUser = req.user;  // user is added to the request by authentication middleware
