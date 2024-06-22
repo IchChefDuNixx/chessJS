@@ -1,7 +1,9 @@
 import { Tooltip, Zoom } from "@mui/material";
+import { useContext } from "react";
 import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, FaChessPawn } from "react-icons/fa";
 
 import "./Piece.css";
+import { SettingsContext } from "../App/App";
 
 
 interface Props {
@@ -31,31 +33,22 @@ function getIcon(type: string) {
 
 
 function Piece({ type } : Props) {
+    const { settings } = useContext(SettingsContext);
     const icon = getIcon(type);
 
-    // TODO: add user-specific setting
-    let show_tooltips: boolean = true;
-    if (show_tooltips) {
-        return(
-            <Tooltip
-                title={type}
-                arrow
-                disableInteractive
-                TransitionComponent={Zoom}
-                enterDelay={1000}
-                >
-                <div className="piece" data-type={type} draggable >
-                    { icon }
-                </div>
-            </Tooltip>
-        );
-    } else {
-        return(
+    return(
+        <Tooltip
+            title={ settings?.showTooltips ? type : "" }
+            arrow
+            disableInteractive
+            TransitionComponent={Zoom}
+            enterDelay={1000}
+            >
             <div className="piece" data-type={type} draggable >
                 { icon }
             </div>
-        );
-    }
+        </Tooltip>
+    );
 }
 
 

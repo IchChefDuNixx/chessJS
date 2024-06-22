@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useWebSocket from 'react-use-websocket';
 
 import Piece from "./Piece";
 import Square from "./Square";
+import { SettingsContext } from "../App/App";
 
 import "./Board.css";
 
@@ -26,6 +27,8 @@ interface BoardProps {
 }
 
 function Board({ loginRequired = false }: BoardProps) {
+    const { settings } = useContext(SettingsContext);
+    
     const [reversed, setReversed] = useState<boolean>(false);
     const [url, setUrl] = useState<string|null>(null);
     useEffect(() => {
@@ -134,15 +137,15 @@ function Board({ loginRequired = false }: BoardProps) {
                 { reversed ? renderedBoard.reverse() : renderedBoard }
             </div>
             <div>
-                <Tooltip title="Rotate your view of the board">
+                <Tooltip title= { settings?.showTooltips ? "Rotate your view of the board" : "" }>
                     <button onClick={() => setReversed(!reversed)} > Reverse Board </button>
                 </Tooltip>
                 {loginRequired ? (
-                    <Tooltip title="Forfeit and leave the match">
+                    <Tooltip title={ settings?.showTooltips ? "Forfeit and leave the match" : "" }>
                         <button onClick={() => handleSurrenderGame()}> Surrender </button>
                     </Tooltip>
                 ) : (
-                    <Tooltip title="Reset the current board">
+                    <Tooltip title={ settings?.showTooltips ? "Reset the current board" : "" }>
                         <button onClick={() => handleRestartGame()}> Restart Game </button>
                     </Tooltip>
                 )}
