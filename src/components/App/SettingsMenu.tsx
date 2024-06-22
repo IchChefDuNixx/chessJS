@@ -2,10 +2,9 @@ import axios from 'axios';
 import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
 import { ChangeEvent, useContext, useState } from 'react';
 
-import './SettingsMenu.css';
-import { UserSettings } from '../server/prisma/model.types';
 import { Settings, SettingsContext } from './App';
 
+import { UserSettings } from '../../server/prisma/model.types';
 
 
 function convertSettingsFormat(settings: Settings): UserSettings {

@@ -1,5 +1,5 @@
-import RandomLogo from '../RandomLogo';
 import LoginForm from './LoginForm';
+import RandomLogo from '../App/RandomLogo';
 
 
 function LoginPage() {

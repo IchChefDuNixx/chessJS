@@ -5,6 +5,7 @@ import useWebSocket from 'react-use-websocket';
 
 import Piece from "./Piece";
 import Square from "./Square";
+
 import "./Board.css";
 
 
@@ -37,17 +38,10 @@ function Board({ loginRequired = false }: BoardProps) {
                 // automatically match http url with websocket url
                 setUrl(`ws://${window.location.hostname}:8173?username=${username}`);
             }
-            // const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}}; // auth
-            // axios.get("/api/user/profile", config)
-            //    .then(response => {
-            //         // automatically match http url with websocket url
-            //         setUrl(`ws://${window.location.hostname}:8173?username=${response.data.username}`);
-            //     })
-            //     .catch(() => console.log("Something went wrong during mount"));
         }
     }, [loginRequired]);
 
-    let sendJsonMessage, lastJsonMessage;
+    let sendJsonMessage, lastJsonMessage: { board?: string[] };
     if (loginRequired) {
         ({ sendJsonMessage, lastJsonMessage } = useWebSocket(url, {
             onOpen: () => console.log('WebSocket connection established.'),

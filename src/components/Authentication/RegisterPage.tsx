@@ -1,4 +1,4 @@
-import RandomLogo from '../RandomLogo';
+import RandomLogo from '../App/RandomLogo';
 import LoginForm from './LoginForm';
 
 

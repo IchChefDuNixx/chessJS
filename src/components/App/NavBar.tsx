@@ -3,7 +3,7 @@ import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ProfileDrawer from './ProfileDashboard/ProfileDashboard';
+import ProfileDrawer from '../ProfileDashboard/ProfileDashboard';
 import './NavBar.css';
 
 

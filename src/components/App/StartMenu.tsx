@@ -3,28 +3,23 @@ import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import animationKnight from '../assets/Animation-knight.json';
-import animationRook from '../assets/Animation - Rook.json';
-import './StartMenu2.css';
+import animationKnight from '../../assets/Animation-knight.json';
+import animationRook from '../../assets/Animation - Rook.json';
+import './StartMenu.css';
 
 
 function StartMenu() {
     const navigate = useNavigate();
     const [text, setText] = useState("Test server");
 
-    // Define an array of logos to use
     const logos = [animationKnight, animationRook];
-
-    // Create an array of refs for Lottie animations
     const lottieRefs = Array.from({ length: 25 }, () => useRef<LottieRefCurrentProps>(null));
 
     useEffect(() => {
-        // Set speed to 0.5 for all Lottie animations after they are mounted
         lottieRefs.forEach((ref) => {
             if (ref.current) {
                 ref.current?.setSpeed(0.4);
                 ref.current?.goToAndPlay(90, true);
-                
             }
         });
     }, [lottieRefs]);
@@ -62,7 +57,7 @@ function StartMenu() {
                             lottieRef={lottieRefs[index]}
                             animationData={logos[index % logos.length]}
                             style={{ width: '100px', height: '100px' }} // Set your preferred size
-                            
+
                         />
                     )}
                 </div>

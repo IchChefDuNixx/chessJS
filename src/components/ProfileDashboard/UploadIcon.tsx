@@ -5,6 +5,7 @@ import React from "react";
 import { checkLogin } from "../Authentication/LoginGuard"
 import { ProfileData } from "./ProfileDashboard";
 
+
 interface Props {
     profileData: ProfileData,
     setProfileData: (value: React.SetStateAction<ProfileData>) => void
@@ -54,4 +55,3 @@ function UploadIcon( { profileData, setProfileData } : Props) {
 }
 
 export default UploadIcon;
-

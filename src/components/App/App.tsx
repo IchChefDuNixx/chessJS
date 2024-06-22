@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import LoginGuard from './Authentication/LoginGuard';
-import LoginPage from './Authentication/LoginPage';
-import RegisterPage from './Authentication/RegisterPage';
-import Board from './ChessBoard/Board';
+import LoginGuard from '../Authentication/LoginGuard';
+import LoginPage from '../Authentication/LoginPage';
+import RegisterPage from '../Authentication/RegisterPage';
+import Board from '../ChessBoard/Board';
 import NavBar from './NavBar';
 import SettingsMenu from './SettingsMenu';
 import StartMenu from './StartMenu';
@@ -12,14 +12,14 @@ import StartMenu from './StartMenu';
 import './App.css';
 
 
-export type Settings = {
+type Settings = {
   showTooltips: boolean,
   darkMode: boolean,
   gender: number[],
   human: number
 }
 
-export const SettingsContext = React.createContext<{ settings?: Settings, setSettings?: (value: React.SetStateAction<Settings>) => void } >({});
+const SettingsContext = React.createContext<{ settings?: Settings, setSettings?: (value: React.SetStateAction<Settings>) => void } >({});
 
 const router = createBrowserRouter([
   {
@@ -101,3 +101,5 @@ function App() {
 }
 
 export default App;
+export { SettingsContext };
+export type { Settings };

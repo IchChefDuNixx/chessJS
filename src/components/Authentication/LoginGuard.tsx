@@ -2,28 +2,27 @@ import axios from "axios";
 import React, {useState} from "react";
 
 import LoginPage from "./LoginPage";
-import NavBar from "../NavBar";
+import NavBar from "../App/NavBar";
 
 
-type Props = {
-    children: React.ReactNode;
-};
-
-
-export async function checkLogin(): Promise<boolean> {
+async function checkLogin(): Promise<boolean> {
     if (!sessionStorage.accessToken) {
         return false;
     }
     const config = {headers: {"Authorization": `Bearer ${sessionStorage.accessToken}`}};  // authentication
     const logged_in = await axios.get("api/user/logged_in", config)
-        .then(() => true)
-        .catch(() => {
-            sessionStorage.removeItem("accessToken")    // delete invalid token
-            return false
-        })
-
+    .then(() => true)
+    .catch(() => {
+        sessionStorage.removeItem("accessToken")    // delete invalid token
+        return false
+    })
+    
     return logged_in;
 }
+
+type Props = {
+    children: React.ReactNode;
+};
 
 function LoginGuard( {children}: Props ) {
 
@@ -36,7 +35,7 @@ function LoginGuard( {children}: Props ) {
     })
 
     if (isLoading) {
-        return <div className="App">Checking Login...</div>;
+        return <div className="App"> Checking Login... </div>;
     }
 
     if (!loggedIn) {
@@ -50,4 +49,5 @@ function LoginGuard( {children}: Props ) {
     return <>{children}</>
 }
 
-export default LoginGuard
+export default LoginGuard;
+export { checkLogin };

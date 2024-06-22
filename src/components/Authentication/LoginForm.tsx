@@ -4,9 +4,10 @@ import { useRef, useState, useContext } from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { SettingsContext, Settings } from '../App/App';
+import Popup from '../App/Popup'
+
 import { UserSettings, Login } from '../../server/prisma/model.types';
-import { SettingsContext, Settings } from '../App';
-import Popup from '../Popup'
 
 
 interface Props {
@@ -14,14 +15,13 @@ interface Props {
 }
 
 function convertSettingsFormat(settings: UserSettings): Settings {
-    return { 
+    return {
       showTooltips: settings.showTooltips,
       darkMode: settings.darkMode,
       gender: [settings.gender_min, settings.gender_max],
       human: settings.human
     }
   }
-  
 
 function LoginForm( { action } : Props) {
     const navigate = useNavigate();
@@ -77,14 +77,14 @@ function LoginForm( { action } : Props) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <Box 
+            <Box
                 ref={ boxRef }
-                sx={{ 
-                    display: 'flex', 
-                    gap: 5, 
+                sx={{
+                    display: 'flex',
+                    gap: 5,
                     // padding: 1,
-                    flexDirection: 'column', 
-                    backgroundColor: '#216f7d', 
+                    flexDirection: 'column',
+                    backgroundColor: '#216f7d',
                     borderRadius: '10px', // Adjust the radius as needed
                     margin: 5, // Adjust the margin as needed
                     height: '250px',
@@ -93,19 +93,19 @@ function LoginForm( { action } : Props) {
                 }}>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >
-                    <label>Username</label>
+                    <label> Username </label>
                     <input {...register("username")} type="text" name="username" autoFocus={sessionStorage.username ? false : true} defaultValue={sessionStorage.username} />
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 5 }} >
-                    <label>Password</label>
-                    <input {...register("password")} type="text" name="password" autoFocus={sessionStorage.username ? true : false}/>
+                    <label> Password </label>
+                    <input {...register("password")} type="password" name="password" autoFocus={sessionStorage.username ? true : false}/>
                 </Box>
 
                 <Box sx={{ height: "22%", display: 'flex', flexDirection: 'column', paddingRight: 1, paddingLeft: 1, gap: 0 }}>
                     <button type="submit">{action.toLocaleUpperCase()}</button>
-                    <Button 
-                        size='small' 
+                    <Button
+                        size='small'
                         onClick={ toggleLoginRegister }
                         sx={{ color: "#adaca6", alignSelf: 'end', paddingRight: 2, paddingTop: 0, fontSize: 12 }}>
                         {action === 'login' ? "register instead" : "back to login"}

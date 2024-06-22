@@ -2,28 +2,27 @@ import axios from "axios";
 import { Avatar, Button, Divider, Drawer, List, ListItem, ListItemText, Tooltip, Typography } from '@mui/material';
 import React from "react";
 
-import './ProfileDashboard.css';
 import LogoutButton from "../Authentication/LogoutButton";
-import ProfileStatisticsTable from "./ProfileStatisticsTable";
 import ProfileGameHistory from "./ProfileGameHistory";
+import ProfileStatisticsTable from "./ProfileStatisticsTable";
 import UploadIcon from "./UploadIcon";
 
 
-export type PlayHistory = {
+type PlayHistory = {
     id: number, 
     timestamp: string, 
     opponent: string, 
     victory: boolean
 };
 
-export type ProfileData = {
+type ProfileData = {
     username: string;
     registered: string;
     profile_picture: string;
     play_history: PlayHistory[]
 };
 
-export type ProfileStatistics = {
+type ProfileStatistics = {
 	games_played: number,
 	games_won: number,
 	winrate: number
@@ -84,7 +83,7 @@ function ProfileDashboard() {
 				<List sx={{ paddingLeft: 2}}>
 					<ListItem>
 						<ListItemText>
-							<Typography variant="h4" sx={{ paddingRight: 2}}>Profile Statistics</Typography>
+							<Typography variant="h4" sx={{ paddingRight: 2}}> Profile Statistics </Typography>
 							<Typography variant="h5" sx={{ paddingBottom: 1}}>{ profileData.username }</Typography>
 						</ListItemText>
 						<UploadIcon profileData={profileData} setProfileData={setProfileData}/>
@@ -95,7 +94,7 @@ function ProfileDashboard() {
 
 				<Divider sx={{ padding: 2 }}/>
 
-				<Typography variant="h5" sx={{ padding: 1, alignSelf: "center" }}>Previous Games</Typography>
+				<Typography variant="h5" sx={{ padding: 1, alignSelf: "center" }}> Previous Games </Typography>
 				<ProfileGameHistory profileData={profileData} />
 
 				<LogoutButton/>
@@ -105,3 +104,4 @@ function ProfileDashboard() {
 }
 
 export default ProfileDashboard;
+export type { PlayHistory, ProfileData, ProfileStatistics };
