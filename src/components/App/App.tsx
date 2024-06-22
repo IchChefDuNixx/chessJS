@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import LoginGuard from '../Authentication/LoginGuard';
@@ -17,6 +17,13 @@ type Settings = {
   darkMode: boolean,
   gender: number[],
   human: number
+}
+
+const defaultSettings = {
+  showTooltips: false,
+  darkMode: false,
+  gender: [40, 60],
+  human: 50
 }
 
 const SettingsContext = React.createContext<{ settings?: Settings, setSettings?: (value: React.SetStateAction<Settings>) => void } >({});
@@ -86,12 +93,20 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [settings, setSettings] = useState({
-    showTooltips: false,
-    darkMode: false,
-    gender: [40, 60],
-    human: 50
+  const [settings, setSettings] = useState(() => {
+    const prevSettings = sessionStorage.getItem("settings");
+    if (prevSettings) {
+      // Get previous setting on page reload
+      return JSON.parse(prevSettings);
+    }
+    // Initialize default settings on first load
+    return defaultSettings;
   });
+
+  useEffect(() => {
+    // Persist settings in session storage for page reload
+    sessionStorage.setItem("settings", JSON.stringify(settings));
+  }, [settings])
 
   return(
     <SettingsContext.Provider value={{settings: settings, setSettings: setSettings}}>
