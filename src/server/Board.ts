@@ -3,9 +3,11 @@ import {Bishop, type BoardIndex, King, Knight, Pawn, Piece, Queen, Rook} from '.
 
 class Board {
     private board: (Piece | null)[][];
+    private turn: 'w'|'b'
 
     constructor() {
         this.board = this.createInitialBoard();
+        this.turn = 'w'
     }
 
     private createInitialBoard(): (Piece | null)[][] {
@@ -69,6 +71,14 @@ class Board {
 
     public resetBoard(): void {
         this.board = this.createInitialBoard();
+    }
+
+    private changeTurn(): void {
+        this.turn = this.turn == 'w' ? 'b' : 'w';
+    }
+
+    public getTurn(): 'w'|'b' {
+        return this.turn
     }
 
     // Calculating the squares a given piece could move
@@ -149,11 +159,16 @@ class Board {
 
     public isValidMove(x:number,y:number,endX:number,endY:number):boolean{
         const allowedMoveset: number[][] = this.getTrace(x,y);
-        for (const [moveX, moveY] of allowedMoveset)
-            if(endX === moveX){
-                if(endY === moveY){return true}
-            }
-        return false;
+        const piece = this.board[x][y]
+        if(this.turn == piece?.color){
+            for (const [moveX, moveY] of allowedMoveset)
+                if(endX === moveX){
+                    if(endY === moveY){
+                        this.changeTurn()
+                        return true
+                    }
+                }
+        }else{return false;}
     }
 
     protected getKingPosition(color: 'b'|'w'): number[][] {
