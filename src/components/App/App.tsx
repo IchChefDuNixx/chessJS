@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     path: '/local',
     element: (
       <>
-        <NavBar hideProfileDashboard />
+        <NavBar />
         <Board />
       </>
     )
@@ -76,7 +76,7 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <>
-        <NavBar hideProfileDashboard/>
+        <NavBar />
         <LoginPage />
       </>
     )
@@ -85,7 +85,7 @@ const router = createBrowserRouter([
     path: '/register',
     element: (
       <>
-        <NavBar hideProfileDashboard/>
+        <NavBar />
         <RegisterPage />
       </>
     )

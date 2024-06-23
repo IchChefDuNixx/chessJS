@@ -1,21 +1,24 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { checkLogin } from '../Authentication/LoginGuard';
 import ProfileDrawer from '../ProfileDashboard/ProfileDashboard';
 import './NavBar.css';
 
 
-interface NavBarProps {
-  hideProfileDashboard?: boolean;
-}
+function NavBar() {
+  const navigate = useNavigate();
 
-// see https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
-function NavBar({ hideProfileDashboard = false}: NavBarProps) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
-  const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    (async () => {
+      setLoggedIn(await checkLogin());
+    })();
+  }, [location.pathname]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorElNav(event.currentTarget);
@@ -33,13 +36,13 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
           {/* Default Toolbar/Buttons for wide enough windows */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button key="Home" onClick={() => navigate("/home")} color='inherit'>
-              <Typography>Home</Typography>
+              <Typography> Home </Typography>
             </Button>
             <Button key="Settings" onClick={() => navigate("/settings")} color='inherit'>
-              <Typography>Settings</Typography>
+              <Typography> Settings </Typography>
             </Button>
             <Button key="Login" onClick={() => navigate("/login")} color='inherit'>
-              <Typography>Login</Typography>
+              <Typography> Login </Typography>
             </Button>
           </Box>
 
@@ -55,23 +58,26 @@ function NavBar({ hideProfileDashboard = false}: NavBarProps) {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
             >
-              <MenuItem key="Home" onClick={() => navigate("/home")}>
-                <Typography>Home</Typography>
+              <MenuItem key="Home" onClick={() => {handleCloseNavMenu(); navigate("/home")}}>
+                <Typography> Home </Typography>
               </MenuItem>
-              <MenuItem key="Settings" onClick={() => navigate("/setting")}>
-                <Typography>Settings</Typography>
+              <MenuItem key="Settings" onClick={() => {handleCloseNavMenu(); navigate("/settings")}}>
+                <Typography> Settings </Typography>
+              </MenuItem>
+              <MenuItem key="Login" onClick={() => {handleCloseNavMenu(); navigate("/login")}}>
+                <Typography> Login </Typography>
               </MenuItem>
             </Menu>
           </Box>
 
           {/* Moved profile-related stuff to new component */}
-          {/* Render based on hideProfileDashboard */}
-          {!hideProfileDashboard && <ProfileDrawer />}
+          {/* Render based on loggedIn */}
+          {loggedIn && <ProfileDrawer />}
 
         </Toolbar>
       </AppBar>
       {/* the toolbar element below creates an empty space between the real toolbar and board */}
-      <Toolbar /> 
+      <Toolbar />
     </div>
   );
 }
