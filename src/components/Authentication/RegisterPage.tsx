@@ -5,7 +5,7 @@ import LoginForm from './LoginForm';
 function RegisterPage() {
     return (
         <>
-            <RandomLogo />
+            <RandomLogo figure='rook'/>
             <LoginForm action='register'/>
         </>
     );

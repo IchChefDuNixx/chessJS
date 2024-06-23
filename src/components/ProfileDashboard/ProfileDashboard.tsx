@@ -54,7 +54,6 @@ function ProfileDashboard() {
 
 		axios.get(`/api/user/profile`, config).then(response => {
 			const data = response.data;
-			console.log(response.data);
 			setProfileData(data);
 
 			const games_played: number = data.play_history.length;

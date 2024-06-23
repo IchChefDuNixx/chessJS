@@ -69,14 +69,14 @@ function SettingsMenu() {
 
 
   return(
-    <div>
+    <Box minWidth={300}>
       <FormGroup>
         <FormControlLabel control={
           <Switch
             checked={settings.showTooltips}
             onChange={e => handleSwitchChange("showTooltips", e)}
           />}
-          label="Show tooltips during gameplay"
+          label="Show Tooltips"
         />
         <FormControlLabel control={
           <Switch
@@ -115,7 +115,7 @@ function SettingsMenu() {
         />
         <Typography> Human % </Typography>
       </Box>
-    </div>
+    </Box>
   );
 }
 

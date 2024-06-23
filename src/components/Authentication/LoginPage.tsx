@@ -5,7 +5,7 @@ import RandomLogo from '../App/RandomLogo';
 function LoginPage() {
     return (
         <>
-            <RandomLogo />
+            <RandomLogo figure='knight' />
             <LoginForm action='login'/>
         </>
     );

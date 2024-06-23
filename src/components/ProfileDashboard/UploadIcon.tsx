@@ -1,7 +1,8 @@
 import axios from "axios";
-import { Avatar, IconButton} from '@mui/material';
-import React from "react";
+import { Avatar, IconButton, Tooltip} from '@mui/material';
+import React, { useContext } from "react";
 
+import { SettingsContext } from "../App/App";
 import { checkLogin } from "../Authentication/LoginGuard"
 import { ProfileData } from "./ProfileDashboard";
 
@@ -12,6 +13,7 @@ interface Props {
 }
 
 function UploadIcon( { profileData, setProfileData } : Props) {
+    const { settings } = useContext(SettingsContext);
     
 	const confirmLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const loggedIn = await checkLogin()
@@ -45,12 +47,14 @@ function UploadIcon( { profileData, setProfileData } : Props) {
 	};
 
     return(
-        <IconButton onClick={confirmLogin} >
-            <label htmlFor="image-upload">
-                <Avatar sx={{minHeight: "100px", minWidth: "100px" }} alt="" src={profileData.profile_picture} />
-            </label>
-            <input id="image-upload" type="file" accept="image/*" hidden onChange={handleUpload} />
-        </IconButton>
+		<Tooltip title={settings?.showTooltips ? "Upload Profile Picture" : ""}>
+			<IconButton onClick={confirmLogin} >
+				<label htmlFor="image-upload">
+					<Avatar sx={{minHeight: "100px", minWidth: "100px" }} alt="" src={profileData.profile_picture} />
+				</label>
+				<input id="image-upload" type="file" accept="image/*" hidden onChange={handleUpload} />
+			</IconButton>
+		</Tooltip>
     );
 }
 

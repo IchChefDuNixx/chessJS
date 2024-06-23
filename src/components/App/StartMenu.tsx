@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import animationKnight from '../../assets/Animation-knight.json';
-import animationRook from '../../assets/Animation - Rook.json';
+import animationRook from '../../assets/Animation-rook.json';
 import './StartMenu.css';
 
 

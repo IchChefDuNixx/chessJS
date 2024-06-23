@@ -2,8 +2,8 @@ import { Tooltip, Zoom } from "@mui/material";
 import { useContext } from "react";
 import { FaChessKing, FaChessQueen, FaChessRook, FaChessBishop, FaChessKnight, FaChessPawn } from "react-icons/fa";
 
-import "./Piece.css";
 import { SettingsContext } from "../App/App";
+import "./Piece.css";
 
 
 interface Props {
