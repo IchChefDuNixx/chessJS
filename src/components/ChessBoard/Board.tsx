@@ -3,9 +3,9 @@ import { Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useWebSocket from 'react-use-websocket';
 
+import { SettingsContext } from "../App/App";
 import Piece from "./Piece";
 import Square from "./Square";
-import { SettingsContext } from "../App/App";
 
 import "./Board.css";
 
@@ -66,7 +66,9 @@ function Board({ loginRequired = false }: BoardProps) {
 
     // the move has to be checked by our chess model
     const handleMove = (start: number, end: number): void => {
-        axios.post("/api/validate_move", {start, end}) // add params for checking in this object
+        const username = sessionStorage.username;
+
+        axios.post("/api/validate_move", { start, end, isOnline: loginRequired, username })
        .then((response) => {
             let is_valid_move: boolean = response.data;
             if (is_valid_move) { execute_move() };

@@ -1,3 +1,4 @@
+import axios from "axios";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import url from "url";
@@ -24,11 +25,19 @@ app.get("/api/hello", (_: Request, res: Response): void => {
 
 const currGame = new Board(); // for logic purposes
 app.post("/api/validate_move", (req: Request, res: Response): void => {
-    // transform list index to matrix index
+    // transform list index to matrix index [0-63 -> (0-7, 0-7)]
     const [oldX, oldY] = [~~(req.body.start / 8), (req.body.start % 8)];
     const [newX, newY] = [~~(req.body.end / 8), (req.body.end % 8)];
 
-    if (currGame.isValidMove(oldX, oldY, newX, newY)) {
+    let playerColor = currGame.getTurn();
+    // effectively ignore playerColor for local games
+    if (req.body.isOnline) {
+        const playerRole = roles[req.body.username];
+        if (playerRole == Role.spectator) { res.status(200).send(false) };
+        playerColor = (playerRole == Role.host) ? "w" : "b";
+    }
+
+    if (currGame.isValidMove(oldX, oldY, newX, newY, playerColor)) {
         currGame.movePiece(oldX, oldY, newX, newY);
         res.status(200).send(true);
     } else {
@@ -97,17 +106,14 @@ wss.on("connection", (connection, req) => { // export this to the login componen
 
     const username = url.parse(req.url!, true).query.username;
     if (!username || username == "null" || typeof username != "string") {
-        console.log("WebSocket connection accepted");
         return
     }
-
-    connection.send(JSON.stringify({board: currentBoard}));
-    console.log(`player ${username} joined.`);
+    console.log("WebSocket connection accepted");
 
     // reconnect logic
-    if (roles[username] == 0) {
+    if (roles[username] == Role.host) {
         players.host = { username, connection };
-    } else if (roles[username] == 1) {
+    } else if (roles[username] == Role.opponent) {
         players.opponent = { username, connection };
     } else {
         // new connection logic
@@ -117,15 +123,25 @@ wss.on("connection", (connection, req) => { // export this to the login componen
         } else if (!("opponent" in players)) {
             players.opponent = { username, connection };
             roles[username] = Role.opponent;
+            (async () => {
+                const res = await axios.post(`http://localhost:5173/api/games`, {
+                    player1: players.host?.username,
+                    player2: players.opponent?.username,
+                    winner: "anna", // TODO: allow null or "". error: prisma foreign key constraint
+                });
+                console.log(res.status);
+            })();
         } else {
             players.spectators.push({ username, connection });
             roles[username] = Role.spectator;
         }
     }
+    connection.send(JSON.stringify({board: currentBoard}));
+    console.log(`player ${username} (${Role[roles[username]]}) joined`);
 
     connection.on("message", (message: string) => handleMessage(message));
     connection.on("close", () => {
-        console.log(`player ${username} left`);
+        console.log(`player ${username} (${Role[roles[username]]}) left`);
         // keep host and opponent
         if (roles[username] == Role.spectator) {
             players.spectators = players.spectators.filter(

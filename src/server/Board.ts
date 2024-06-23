@@ -1,9 +1,10 @@
-import {Bishop, type BoardIndex, King, Knight, Pawn, Piece, Queen, Rook} from './Pieces';
+import {Bishop, King, Knight, Pawn, Piece, Queen, Rook} from './Pieces';
+import type { BoardIndex, PieceColor } from "./Pieces";
 
 
 class Board {
     private board: (Piece | null)[][];
-    private turn: 'w'|'b'
+    private turn: PieceColor;
 
     constructor() {
         this.board = this.createInitialBoard();
@@ -71,13 +72,14 @@ class Board {
 
     public resetBoard(): void {
         this.board = this.createInitialBoard();
+        this.turn = "w";
     }
 
     private changeTurn(): void {
         this.turn = this.turn == 'w' ? 'b' : 'w';
     }
 
-    public getTurn(): 'w'|'b' {
+    public getTurn(): PieceColor {
         return this.turn
     }
 
@@ -157,18 +159,19 @@ class Board {
         return returnArray;
     }
 
-    public isValidMove(x:number,y:number,endX:number,endY:number):boolean{
+    public isValidMove(x: number, y: number, endX: number, endY: number, playerColor: PieceColor | null): boolean {
         const allowedMoveset: number[][] = this.getTrace(x,y);
         const piece = this.board[x][y]
-        if(this.turn == piece?.color){
-            for (const [moveX, moveY] of allowedMoveset)
-                if(endX === moveX){
-                    if(endY === moveY){
-                        this.changeTurn()
-                        return true
-                    }
+
+        if (this.turn == piece?.color && this.turn == playerColor) {
+            for (const [moveX, moveY] of allowedMoveset) {
+                if (endX === moveX && endY === moveY) {
+                    this.changeTurn();
+                    return true;
                 }
-        }else{return false;}
+            }
+        }
+        return false;
     }
 
     protected getKingPosition(color: 'b'|'w'): number[][] {

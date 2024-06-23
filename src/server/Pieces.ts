@@ -1,6 +1,6 @@
-type PieceType = 'pawn' | 'knight' | 'bishop' | 'rook' | 'king' | 'queen';
-type PieceColor = 'w' | 'b';
 type BoardIndex = 0|1|2|3|4|5|6|7;
+type PieceColor = 'w' | 'b';
+type PieceType = 'pawn' | 'knight' | 'bishop' | 'rook' | 'king' | 'queen';
 
 interface PieceProps {
     X: BoardIndex;
@@ -184,4 +184,5 @@ class King extends Piece {
     }
 }
 
-export { Bishop, type BoardIndex, King, Knight, Pawn, Piece, Queen, Rook };
+export { Bishop, King, Knight, Pawn, Piece, Queen, Rook };
+export type { BoardIndex, PieceColor, PieceType };
