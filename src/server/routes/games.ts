@@ -1,32 +1,44 @@
-import express from "express";
-import { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import GameService from "../prisma/services/GameService";
 
 
 const router = express.Router();
 const gameService = new GameService();
 
+// router.use(logger);
+
 // Get all games
 router.get("/", async (req: Request, res: Response) => {
-    const games = await gameService.getGames();
-    res.send({ ...games });
+    const result = await gameService.getGames();
+    res.status(result.status).send({ ...result.data });
 });
 
 // Create new game
 router.post("/", async (req: Request, res: Response) => {
-    const newGame = await gameService.createGame({
-        winner: req.body.winner,
+    const result = await gameService.createGame({
         player1: req.body.player1,
         player2: req.body.player2,
+        winner: req.body.winner,
     });
-    res.send({ ...newGame });
+    res.status(result.status).send({ ...result.data });
+});
+
+// Update game
+router.put("/", async (req: Request, res: Response) => {
+    const result = await gameService.updateGame(parseInt(req.body.id) , req.body.winner);
+    res.status(result.status).send({ ...result.data });
 });
 
 // Delete game
 router.delete("/", async (req: Request, res: Response) => {
-    const newGame = await gameService.deleteGame(req.body.id);
-    res.send({ ...newGame });
+    const result = await gameService.deleteGame(req.body.id);
+    res.status(result.status).send({ ...result.data });
 });
 
+function logger(req: Request, res: Response, next: NextFunction) {
+    console.log(`Request to /api/games${req.url}`);
+    console.log("Data: ", req.body);
+    next();
+}
 
 export default router;
