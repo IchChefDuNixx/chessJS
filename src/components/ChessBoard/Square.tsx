@@ -23,9 +23,10 @@ interface Props {
 function Square({ black, position, handleMove, highlightMoves, children } : PropsWithChildren<Props>) {
 
     const handleMouseDown = (e: React.MouseEvent): void => {
+        highlightMoves([]); // removes move highlights
         if (holding) holding.classList.remove("holding"); // clears old stuck class
         if (e.button === 0) {
-            let target = e.target as HTMLElement;
+            const target = e.target as HTMLElement;
             if (target.classList.contains("piece")) {
                 holding = e.currentTarget;
                 holding.classList.add("holding");
@@ -34,12 +35,24 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         } else if (e.button === 1) { // prevents "hovering" from sticking in edge-cases
             e.currentTarget.classList.remove("hovering");
         }
-        highlightMoves([]); // removes move highlights
     }
 
     const handleMouseUp = (e: React.MouseEvent): void => {
         if (holding) holding.classList.remove("holding");
         e.currentTarget.classList.remove("hovering");
+
+        second = e.target as HTMLElement;
+        if (first) {
+            if (second.classList.contains("piece")) {
+                second = second.parentNode as HTMLElement;
+            }
+            const startPosition = first.getAttribute("data-position");
+            const endPosition = second.getAttribute("data-position");
+            if (startPosition && endPosition)
+                handleMove(+startPosition, +endPosition);
+        }
+        first = null;
+        second = null;
     }
 
     const handleOnMouseLeave = (e: React.MouseEvent): void => {
@@ -48,6 +61,9 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
 
     const handleDoubleClick = (e: React.MouseEvent): void => {
         const target = e.target as HTMLElement;
+        if (!first && target.classList.contains("piece")) {
+            first = target.parentNode as HTMLElement;
+        };
         const index: string = e.currentTarget.getAttribute("data-position")!;
 
         if (target.classList.contains('piece')) {
@@ -96,7 +112,7 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
     };
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
-        let target = e.touches[0].target as HTMLElement;
+        const target = e.touches[0].target as HTMLElement;
 
         // prevent moving empty squares
         if (!first && target.classList.contains("piece")) {
@@ -115,8 +131,8 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
             else
                 second = target; // empty square
 
-            let startPosition = first.getAttribute("data-position");
-            let endPosition = second.getAttribute("data-position");
+            const startPosition = first.getAttribute("data-position");
+            const endPosition = second.getAttribute("data-position");
             // should never be null but TypeScript likes this
             if (startPosition && endPosition)
                 handleMove(+startPosition, +endPosition);
