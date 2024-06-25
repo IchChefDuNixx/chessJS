@@ -42,7 +42,7 @@ html, body {
     justify-content: center;
   }
   
-  button {
+  .button {
     background-color: #216f7d;
     color: white;
     padding: 10px 20px; /* Smaller button size */
@@ -53,6 +53,8 @@ html, body {
     cursor: pointer;
     transition: background-color 0.3s;
   }
+
+
   
   button:hover {
     background-color: #eccfa9;
