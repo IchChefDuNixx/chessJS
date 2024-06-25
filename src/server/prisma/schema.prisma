@@ -27,10 +27,10 @@ model Game {
   timestamp   DateTime  @default(now())
   player_1    User      @relation(name: "player_1", fields: [player1], references: [username])
   player_2    User      @relation(name: "player_2", fields: [player2], references: [username])
-  winner_ref  User      @relation(name: "winner", fields: [winner], references: [username])
+  winner_ref  User?     @relation(name: "winner", fields: [winner], references: [username])
   player1     String
   player2     String
-  winner      String
+  winner      String?
 }
 
 // Theoretically could be in User, but when querying you'd have to exclude the password everytime.

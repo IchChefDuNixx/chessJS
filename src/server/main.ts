@@ -126,8 +126,7 @@ wss.on("connection", (connection, req) => { // export this to the login componen
             (async () => {
                 const res = await axios.post(`http://localhost:5173/api/games`, {
                     player1: players.host?.username,
-                    player2: players.opponent?.username,
-                    winner: "anna", // TODO: allow null or "". error: prisma foreign key constraint
+                    player2: players.opponent?.username
                 });
                 console.log(res.status);
             })();

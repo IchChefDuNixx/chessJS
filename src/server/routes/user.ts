@@ -1,8 +1,9 @@
 import express, { Request, Response, NextFunction } from "express";
-import UserService from "../prisma/services/UserService";
+import fileUpload from "express-fileupload";
+
 import { authenticate, AuthRequest } from "../auth/AuthMiddleware";
 import AuthService from "../auth/AuthService";
-import fileUpload from "express-fileupload";
+import UserService from "../prisma/services/UserService";
 
 
 /*
@@ -20,7 +21,7 @@ const authService = new AuthService(userService);
 
 
 // Only used for logging
-router.use(logger);
+// router.use(logger);
 
 
 router.post("/login", async (req: Request, res: Response) => {
@@ -99,6 +100,7 @@ router.post("/upload", fileUpload(), (req: AuthRequest, res: Response) => {
 
 function logger(req: Request, res: Response, next: NextFunction) {
     console.log(`Request to /api/user${req.url}`);
+    console.log("Data: ", req.body);
     next();
 }
 
