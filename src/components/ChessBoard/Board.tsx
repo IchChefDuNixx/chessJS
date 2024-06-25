@@ -65,7 +65,7 @@ function Board({ loginRequired = false }: BoardProps) {
     const handleMove = (start: number, end: number): void => {
         const username = sessionStorage.username;
 
-        axios.post("/api/validate_move", { start, end, isOnline: loginRequired, username })
+        axios.post("/api/gameplay/validate_move", { start, end, isOnline: loginRequired, username })
             .then((response) => {
                 let is_valid_move: boolean = response.data;
                 if (is_valid_move) {
@@ -96,7 +96,7 @@ function Board({ loginRequired = false }: BoardProps) {
     };
 
     const handleRestartGame = (): void => {
-        axios.post("/api/restart_game")
+        axios.post("/api/gameplay/restart_game")
             .then(() => {
                 loginRequired ? sendJsonMessage({ board: initialBoard }) : setBoard(initialBoard);
                 setistaken(false);

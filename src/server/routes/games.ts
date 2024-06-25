@@ -8,7 +8,7 @@ const gameService = new GameService();
 // router.use(logger);
 
 // Get all games
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (_: Request, res: Response) => {
     const result = await gameService.getGames();
     res.status(result.status).send({ ...result.data });
 });
@@ -35,7 +35,7 @@ router.delete("/", async (req: Request, res: Response) => {
     res.status(result.status).send({ ...result.data });
 });
 
-function logger(req: Request, res: Response, next: NextFunction) {
+function logger(req: Request, _: Response, next: NextFunction) {
     console.log(`Request to /api/games${req.url}`);
     console.log("Data: ", req.body);
     next();

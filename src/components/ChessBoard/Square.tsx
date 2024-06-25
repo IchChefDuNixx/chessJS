@@ -34,6 +34,7 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         } else if (e.button === 1) { // prevents "hovering" from sticking in edge-cases
             e.currentTarget.classList.remove("hovering");
         }
+        highlightMoves([]); // removes move highlights
     }
 
     const handleMouseUp = (e: React.MouseEvent): void => {
@@ -50,7 +51,7 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         const index: string = e.currentTarget.getAttribute("data-position")!;
 
         if (target.classList.contains('piece')) {
-            axios.post('/api/possible_moves', { index })
+            axios.post('/api/gameplay/possible_moves', { index })
                 .then(response => highlightMoves(response.data))
                 .catch(error => console.error('Error (from square.tsx):', error));
         }
