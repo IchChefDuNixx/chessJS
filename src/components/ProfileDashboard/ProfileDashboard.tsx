@@ -62,8 +62,8 @@ function ProfileDashboard() {
 
 			setProfileStatistics({games_played, games_won, winrate});
 		}).catch(() => {})
-	}, []); // <- This empty array is SUPER important
-
+	}, [isOpen]);
+	
 	return (
 		<div>
 			{/* Default closed drawer */}
