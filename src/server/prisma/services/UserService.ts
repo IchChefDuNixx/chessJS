@@ -1,6 +1,6 @@
-import { UpdateUser, UserSettings, Profile } from "../model.types";
 import { User, UserPassword } from "@prisma/client";
 
+import { UpdateUser, UserSettings, Profile } from "../model.types";
 import prisma, {PrismaServiceResponse, handleError} from "./PrismaService";
 
 
@@ -134,23 +134,27 @@ class UserService {
                 return {status: 400, data: null};
             }
 
-            const history1 = user.GameAsPlayer1.map(game => {
-                return {
-                    id: game.id,
-                    timestamp: game.timestamp,
-                    opponent: game.player2,
-                    victory: game.winner === user.username
-                }
-            });
+            const history1 = user.GameAsPlayer1
+                .filter(game => game.winner)    
+                .map(game => {
+                    return {
+                        id: game.id,
+                        timestamp: game.timestamp,
+                        opponent: game.player2,
+                        victory: game.winner === user.username
+                    }
+                });
 
-            const history2 = user.GameAsPlayer2.map(game => {
-                return {
-                    id: game.id,
-                    timestamp: game.timestamp,
-                    opponent: game.player1,
-                    victory: game.winner === user.username
-                }
-            });
+            const history2 = user.GameAsPlayer2
+                .filter(game => game.winner)    
+                .map(game => {
+                    return {
+                        id: game.id,
+                        timestamp: game.timestamp,
+                        opponent: game.player1,
+                        victory: game.winner === user.username
+                    }
+                });
 
             const play_history = history1.concat(history2);
 
