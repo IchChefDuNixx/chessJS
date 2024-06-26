@@ -10,6 +10,8 @@ let second: HTMLElement | null = null;
 // to remember the square we started dragging from
 let holding: EventTarget & Element | null = null;
 
+const isTouchDevice = navigator.maxTouchPoints > 0;
+
 interface Props {
     black: boolean,
     position: number,
@@ -17,14 +19,14 @@ interface Props {
     highlightMoves: (indeces: number[]) => void
 }
 
-// .currentTarget is always square
-// .target is square or piece if there is one
+// e.currentTarget is always square
+// e.target is square or piece if there is one
 
 function Square({ black, position, handleMove, highlightMoves, children } : PropsWithChildren<Props>) {
 
     const handleMouseDown = (e: React.MouseEvent): void => {
-        highlightMoves([]); // removes move highlights
-        if (holding) holding.classList.remove("holding"); // clears old stuck class
+        if (!isTouchDevice) { highlightMoves([]) }; // removes move highlights
+        if (holding) { holding.classList.remove("holding") }; // clears old stuck class
         if (e.button === 0) {
             const target = e.target as HTMLElement;
             if (target.classList.contains("piece")) {
@@ -35,14 +37,14 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
         } else if (e.button === 1) { // prevents "hovering" from sticking in edge-cases
             e.currentTarget.classList.remove("hovering");
         }
-    }
+    };
 
     const handleMouseUp = (e: React.MouseEvent): void => {
-        if (holding) holding.classList.remove("holding");
+        if (holding) { holding.classList.remove("holding") };
         e.currentTarget.classList.remove("hovering");
 
-        second = e.target as HTMLElement;
-        if (first) {
+        if (first && !isTouchDevice) {
+            second = e.target as HTMLElement;
             if (second.classList.contains("piece")) {
                 second = second.parentNode as HTMLElement;
             }
@@ -50,14 +52,14 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
             const endPosition = second.getAttribute("data-position");
             if (startPosition && endPosition)
                 handleMove(+startPosition, +endPosition);
+            first = null;
+            second = null;
         }
-        first = null;
-        second = null;
-    }
+    };
 
     const handleOnMouseLeave = (e: React.MouseEvent): void => {
         e.currentTarget.classList.remove("hovering");
-    }
+    };
 
     const handleDoubleClick = (e: React.MouseEvent): void => {
         const target = e.target as HTMLElement;
@@ -113,6 +115,8 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
         const target = e.touches[0].target as HTMLElement;
+
+        highlightMoves([]); // removes move highlights
 
         // prevent moving empty squares
         if (!first && target.classList.contains("piece")) {
