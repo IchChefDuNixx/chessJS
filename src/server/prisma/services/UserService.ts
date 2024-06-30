@@ -135,7 +135,7 @@ class UserService {
             }
 
             const history1 = user.GameAsPlayer1
-                .filter(game => game.winner)    
+                .filter(game => game.winner)
                 .map(game => {
                     return {
                         id: game.id,
@@ -146,7 +146,7 @@ class UserService {
                 });
 
             const history2 = user.GameAsPlayer2
-                .filter(game => game.winner)    
+                .filter(game => game.winner)
                 .map(game => {
                     return {
                         id: game.id,

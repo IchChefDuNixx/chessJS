@@ -3,9 +3,9 @@ import express, { Request, Response } from "express"
 import ViteExpress from "vite-express";
 import { WebSocketServer } from "ws";
 
-import { getInitialBoard } from "./initialBoard.ts";
-import { getInitialPlayers } from "./Players.ts";
-import { getInitialRoles, roles } from "./Role.ts";
+import { getInitialBoard } from "./helpers/initialBoard.ts";
+import { getInitialPlayers, players } from "./helpers/Players.ts";
+import { getInitialRoles, roles } from "./helpers/Role.ts";
 import gameRouter from "./routes/games.ts";
 import gameplayRouter from "./routes/gameplay.ts";
 import userRouter from "./routes/user.ts";
@@ -33,7 +33,7 @@ ViteExpress.listen(app, 5173, () => {
 
 
 let currentBoard = getInitialBoard();
-let players = getInitialPlayers();
+// let players = getInitialPlayers();
 // let roles = getInitialRoles();
 
 const server = app.listen(8173, () => {
@@ -46,17 +46,17 @@ wss.on("connection", (connection, req) => {
     console.log("Received a new connection");
 
     let username: string;
-    try { username = parseUsername(req) } 
+    try { username = parseUsername(req) }
     catch { return }
 
     console.log("WebSocket connection accepted");
-    players = handleConnection(username, connection, players, roles, currentBoard);
+    handleConnection(username, connection, players, roles, currentBoard);
 
     connection.on("message", (message: string) => {
         currentBoard = handleMessage(message, players, currentBoard);
     });
-    
+
     connection.on("close", () => {
-        players = handleClose(username, players, roles);
+        handleClose(username, players, roles);
     });
 });

@@ -11,9 +11,9 @@ export type CreateGame = Omit<Game, "id" | "timestamp">;
 export type UserSettings = Pick<User, "showTooltips" | "darkMode" | "gender_min" | "gender_max" | "human">;
 
 export type PlayHistory = {
-    id: number, 
-    timestamp: Date, 
-    opponent: string, 
+    id: number,
+    timestamp: Date,
+    opponent: string,
     victory: boolean
 };
 

@@ -10,6 +10,8 @@ type Players = {
 function getInitialPlayers(): Players {
      return { spectators: [] };
 };
+
+const players = getInitialPlayers();
  
 export default Players;
-export { getInitialPlayers };
+export { getInitialPlayers, players };

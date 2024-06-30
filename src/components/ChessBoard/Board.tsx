@@ -1,24 +1,20 @@
 import axios from "axios";
+import Lottie from 'lottie-react';
 import { Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useWebSocket from 'react-use-websocket';
-import { SettingsContext } from "../App/App";
-import Piece from "./Piece";
-import Square from "./Square";
-import "./Board.css";
-import Lottie from 'lottie-react';
-import animationExplosion from '../../assets/Animation-explosion.json';
 
-const initialBoard: string[] = [
-  "rook_b", "knight_b", "bishop_b", "queen_b", "king_b", "bishop_b", "knight_b", "rook_b",
-  "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b", "pawn_b",
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w", "pawn_w",
-  "rook_w", "knight_w", "bishop_w", "queen_w", "king_w", "bishop_w", "knight_w", "rook_w"
-];
+import { SettingsContext } from "../App/App";
+import animationExplosion from '../../assets/Animation-explosion.json';
+import Piece from "./Piece";
+import { getInitialBoard } from "../../server/helpers/initialBoard";
+import Square from "./Square";
+
+import "./Board.css";
+
+
+const initialBoard: string[] = getInitialBoard();
 
 // true = online game, false = local game
 interface BoardProps {
@@ -27,13 +23,14 @@ interface BoardProps {
 
 function Board({ loginRequired = false }: BoardProps) {
     const { settings } = useContext(SettingsContext);
+    const navigate = useNavigate();
     const [reversed, setReversed] = useState<boolean>(false);
     const [url, setUrl] = useState<string | null>(null);
     const [istaken, setistaken] = useState<boolean>(false);
     const [board, setBoard] = useState<string[]>(initialBoard);
     const [lastMoveEnd, setLastMoveEnd] = useState<number | null>(null);
     const [showAnimation, setShowAnimation] = useState<boolean>(false);
-    let sendJsonMessage, lastJsonMessage: { board?: string[] };
+    let sendJsonMessage, lastJsonMessage: { board?: string[], gameOver?: boolean };
 
     useEffect(() => {
         if (loginRequired) {
@@ -59,6 +56,12 @@ function Board({ loginRequired = false }: BoardProps) {
     useEffect(() => {
         if (loginRequired) {
             setBoard(lastJsonMessage?.board || initialBoard);
+            console.log(lastJsonMessage);
+            if (lastJsonMessage?.gameOver) {
+                // TODO: make more smooth
+                alert("The game has concluded!");
+                navigate("/home");
+            }
         }
     }, [lastJsonMessage, loginRequired]);
 
@@ -66,10 +69,10 @@ function Board({ loginRequired = false }: BoardProps) {
         const username = sessionStorage.username;
 
         axios.post("/api/gameplay/validate_move", { start, end, isOnline: loginRequired, username })
-            .then((response) => {
-                let is_valid_move: boolean = response.data;
-                if (is_valid_move) {
-                    execute_move(start, end);
+        .then((response) => {
+            let is_valid_move: boolean = response.data;
+            if (is_valid_move) {
+                execute_move(start, end);
                 }
             })
             .catch(() => console.log("Something went wrong in handleMove()"));
@@ -95,18 +98,37 @@ function Board({ loginRequired = false }: BoardProps) {
         loginRequired ? sendJsonMessage({ board: newBoard }) : setBoard(newBoard);
     };
 
+    // Local only
     const handleRestartGame = (): void => {
-        axios.post("/api/gameplay/restart_game")
+        axios.post("/api/gameplay/restart_game", { isOnline: false })
             .then(() => {
-                loginRequired ? sendJsonMessage({ board: initialBoard }) : setBoard(initialBoard);
+                setBoard(initialBoard);
                 setistaken(false);
                 setLastMoveEnd(null);
-            })
-            .catch(() => console.log("Something went wrong in handleRestartGame()"));
+            }).catch(() => {
+                console.log("Something went wrong in handleRestartGame()");
+            });
     };
 
+    // Online only
     const handleSurrenderGame = (): void => {
-        // TODO local and server-side handling
+        const username = sessionStorage.username;
+
+        axios.post("/api/gameplay/match_info", { username })
+            .then(res => {
+                const id = res.data.id;
+                const winner = res.data.opponent;
+                axios.put("/api/games/", { id, winner })
+                    .then(() => {
+                        axios.post("/api/gameplay/restart_game", { isOnline: true })
+                            .then(() => {
+                                // Everything was successful
+                                sendJsonMessage({ board: initialBoard, gameOver: true });
+                            }).catch(e => { console.log(e) });
+                    }).catch(e => { console.log(e) });
+            }).catch(() => {
+                console.log("Something went wrong in handleSurrenderGame()");
+            });
     };
 
     const highlightSquares = (indices: number[]): void => {
@@ -155,15 +177,15 @@ function Board({ loginRequired = false }: BoardProps) {
             </div>
             <div>
                 <Tooltip title={settings?.showTooltips ? "Rotate your view of the board" : ""}>
-                    <button onClick={() => setReversed(!reversed)}>Reverse Board</button>
+                    <button onClick={() => setReversed(!reversed)}> Reverse Board </button>
                 </Tooltip>
                 {loginRequired ? (
                     <Tooltip title={settings?.showTooltips ? "Forfeit and leave the match" : ""}>
-                        <button onClick={() => handleSurrenderGame()}>Surrender</button>
+                        <button onClick={handleSurrenderGame}> Surrender </button>
                     </Tooltip>
                 ) : (
                     <Tooltip title={settings?.showTooltips ? "Reset the current board" : ""}>
-                        <button onClick={() => handleRestartGame()}>Restart Game</button>
+                        <button onClick={handleRestartGame}> Restart Game </button>
                     </Tooltip>
                 )}
             </div>

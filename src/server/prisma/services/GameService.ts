@@ -19,7 +19,7 @@ class GameService {
     async createGame(data: CreateGame): Promise<PrismaServiceResponse<Game|null>> {
         if (data.player1 === data.player2) {
             // cannot play against yourself
-            return { status: 400, data: null };            
+            return { status: 400, data: null };
         }
         if (data.winner && (data.winner !== data.player1 && data.winner !== data.player2)) {
             // winner not one of the players

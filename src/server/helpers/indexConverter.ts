@@ -1,4 +1,4 @@
-import { BoardIndex } from "./Pieces";
+import { BoardIndex } from "../Pieces";
 
 
 // transform list index to matrix index [0-63 -> (0-7, 0-7)]
@@ -13,7 +13,7 @@ function listIndexToBoardIndex(listIndex: number): [BoardIndex, BoardIndex] {
 }
 
 // transform matrix index to list index [(0-7, 0-7) -> 0-63]
-function BoardIndexToListIndex([x, y]: BoardIndex[]) {
+function BoardIndexToListIndex([x, y]: [BoardIndex, BoardIndex]) {
     if (x < 0 || x > 7) {
         throw new RangeError(`Valid range [0,7] (${x})`);
     }
