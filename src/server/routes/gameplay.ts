@@ -20,7 +20,7 @@ router.post("/validate_move", (req: Request, res: Response): void => {
         if (req.body.isOnline) {
             const playerRole = roles[req.body.username];
             if (playerRole == Role.spectator) {
-                res.status(200).send(false);
+                res.status(200).send({ isValid: false, gameOver: false});
                 return;
             }
             playerColor = (playerRole == Role.host) ? "w" : "b";
@@ -28,9 +28,9 @@ router.post("/validate_move", (req: Request, res: Response): void => {
 
         if (currGame.isValidMove(oldX, oldY, newX, newY, playerColor)) {
             currGame.movePiece(oldX, oldY, newX, newY);
-            res.status(200).send(true);
+            res.status(200).send({ isValid: true, gameOver: currGame.getIsKingTaken()});
         } else {
-            res.status(200).send(false);
+            res.status(200).send({ isValid: false, gameOver: false});
         }
         return;
     } catch {

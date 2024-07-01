@@ -70,15 +70,16 @@ function Board({ loginRequired = false }: BoardProps) {
 
         axios.post("/api/gameplay/validate_move", { start, end, isOnline: loginRequired, username })
         .then((response) => {
-            let is_valid_move: boolean = response.data;
-            if (is_valid_move) {
-                execute_move(start, end);
+            const isValidMove: boolean = response.data.isValid;
+            const gameOver: boolean = response.data.gameOver;
+            if (isValidMove) {
+                execute_move(start, end, gameOver);
                 }
             })
             .catch(() => console.log("Something went wrong in handleMove()"));
     };
 
-    const execute_move = (start: number, end: number): void => {
+    const execute_move = (start: number, end: number, gameOver: boolean): void => {
         const newBoard = [...board];
         const movedPiece = newBoard[start];
         newBoard[start] = "";
@@ -95,7 +96,7 @@ function Board({ loginRequired = false }: BoardProps) {
             setShowAnimation(false);
         }, 500);
 
-        loginRequired ? sendJsonMessage({ board: newBoard }) : setBoard(newBoard);
+        loginRequired ? sendJsonMessage({ board: newBoard, gameOver }) : setBoard(newBoard);
     };
 
     // Local only
@@ -118,14 +119,16 @@ function Board({ loginRequired = false }: BoardProps) {
             .then(res => {
                 const id = res.data.id;
                 const winner = res.data.opponent;
-                axios.put("/api/games/", { id, winner })
-                    .then(() => {
-                        axios.post("/api/gameplay/restart_game", { isOnline: true })
-                            .then(() => {
-                                // Everything was successful
-                                sendJsonMessage({ board: initialBoard, gameOver: true });
-                            }).catch(e => { console.log(e) });
-                    }).catch(e => { console.log(e) });
+                if (winner) {
+                    axios.put("/api/games/", { id, winner })
+                        .then(() => {
+                            axios.post("/api/gameplay/restart_game", { isOnline: true })
+                                .then(() => {
+                                    // Everything was successful
+                                    sendJsonMessage({ board: initialBoard, gameOver: true });
+                                }).catch(e => { console.log(e) });
+                        }).catch(e => { console.log(e) });
+                } else { navigate("/home") };
             }).catch(() => {
                 console.log("Something went wrong in handleSurrenderGame()");
             });

@@ -1,4 +1,4 @@
-import {Bishop, King, Knight, Pawn, Piece, Queen, Rook} from './Pieces';
+import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
 import type { BoardIndex, PieceColor } from "./Pieces";
 
 
@@ -186,34 +186,35 @@ class Board {
         return returnArray
     }
 
-    public isCheckWhite(): boolean {
-        const whiteKingPosition = this.getKingPosition('w');
+    // public isCheckWhite(): boolean {
+    //     const whiteKingPosition = this.getKingPosition('w');
 
-        // Add your check logic here for white king
-        return false;
-    }
+    //     // Add your check logic here for white king
+    //     return false;
+    // }
 
-    public isCheckBlack(): boolean {
-        const blackKingPosition = this.getKingPosition('b');
+    // public isCheckBlack(): boolean {
+    //     const blackKingPosition = this.getKingPosition('b');
 
-        // Add your check logic here for black king
-        return false;
-    }
+    //     // Add your check logic here for black king
+    //     return false;
+    // }
 
-    //Not super sure about this!
+    // TODO: find and set true/false kingTaken in class
+    // res.status(200).send({ isValid: true, gameOver: currGame.getIsKingTaken()});
     public movePiece(startX: BoardIndex, startY: BoardIndex, endX: BoardIndex, endY: BoardIndex): void {
-      const piece = this.board[startX][startY];
-      if (piece) {
-          // Remove the piece from its original position
-          this.board[startX][startY] = null;
-          // Update the piece's position
-          piece.X = endX;
-          piece.Y = endY;
-          // Place the piece in the new position
-          this.board[endX][endY] = piece;
-          piece.setHasMoved();
-      }
-  }
+        const piece = this.board[startX][startY];
+        if (piece) {
+            // Remove the piece from its original position
+            this.board[startX][startY] = null;
+            // Update the piece's position
+            piece.X = endX;
+            piece.Y = endY;
+            // Place the piece in the new position
+            this.board[endX][endY] = piece;
+            piece.setHasMoved();
+        }
+    }
 }
 
 export default Board;
