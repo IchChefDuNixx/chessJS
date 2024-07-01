@@ -1,4 +1,4 @@
-import { BoardIndex } from "../Pieces";
+import { BoardIndex } from "../Pieces/Piece";
 
 
 // transform list index to matrix index [0-63 -> (0-7, 0-7)]

@@ -1,5 +1,11 @@
-import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from './Pieces';
-import type { BoardIndex, PieceColor } from "./Pieces";
+import Bishop from "./Pieces/Bishop";
+import King from "./Pieces/King";
+import Knight from "./Pieces/Knight";
+import Pawn from "./Pieces/Pawn";
+import type { BoardIndex, PieceColor } from "./Pieces/Piece";
+import Piece from "./Pieces/Piece";
+import Queen from "./Pieces/Queen";
+import Rook from "./Pieces/Rook";
 
 
 class Board {
@@ -80,87 +86,60 @@ class Board {
     }
 
     public getTurn(): PieceColor {
-        return this.turn
+        return this.turn;
     }
 
     // Calculating the squares a given piece could move
-       public getTrace(x: BoardIndex, y: BoardIndex): BoardIndex[][] {
+    public getTrace(x: BoardIndex, y: BoardIndex): BoardIndex[][] {
         if (this.board[x][y] === null) {
             return [];
         }
         const piece = this.board[x][y];
         const returnArray: BoardIndex[][] = [];
 
-        // Trace of pawn
-        if (piece.getType() === 'pawn') {
-            const moves = piece.getPossibleMoves();
-            if (!Array.isArray(moves)) return [];
-            for (const [moveX, moveY] of moves) {
-                //Empty Square -> allowed Move
-                if (this.board[moveX][moveY] === null) {
-                    returnArray.push([moveX, moveY]);
-                } else {
-                    break;
-                }
-            }
-            // Pawns can take left and right diagonally
+        if (piece.getType() === "pawn") {
             if (piece.getColor() === 'w') {
                 if (this.board[piece.X - 1][piece.Y + 1]?.getColor() === 'b') {
-                    returnArray.push([piece.X - 1, piece.Y + 1]);
+                    returnArray.push([piece.X - 1 as BoardIndex, piece.Y + 1 as BoardIndex]);
                 }
                 if (this.board[piece.X - 1][piece.Y - 1]?.getColor() === 'b') {
-                    returnArray.push([piece.X - 1, piece.Y - 1]);
+                    returnArray.push([piece.X - 1 as BoardIndex, piece.Y - 1 as BoardIndex]);
                 }
             } else if (piece.getColor() === 'b') {
                 if (this.board[piece.X + 1][piece.Y + 1]?.getColor() === 'w') {
-                    returnArray.push([piece.X + 1, piece.Y + 1]);
+                    returnArray.push([piece.X + 1 as BoardIndex, piece.Y + 1 as BoardIndex]);
                 }
                 if (this.board[piece.X + 1][piece.Y - 1]?.getColor() === 'w') {
-                    returnArray.push([piece.X + 1, piece.Y - 1]);
+                    returnArray.push([piece.X + 1 as BoardIndex, piece.Y - 1 as BoardIndex]);
                 }
             }
-
-        // Trace for knight and king
-        } else if (piece.getType() === 'knight' || piece.getType() === 'king') {
-            const moves = piece.getPossibleMoves();
-            if (!Array.isArray(moves)) return [];
-            for (const [moveX, moveY] of moves) {
-                //Empty Square -> allowed Move
-                if (this.board[moveX][moveY] == null) {
-                    returnArray.push([moveX, moveY]);
-                } else {
-                    //Diffrent Color -> allowed take
-                    if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
+        };
+        // for all pieces including Pawn
+        const moveSet = piece.getPossibleMoves();
+        if (Object.keys(moveSet).length >= 0) {
+            for (const [_, moves] of Object.entries(moveSet)) {
+                for (const [moveX, moveY] of moves as [BoardIndex, BoardIndex][]) {
+                    // Empty Square -> allowed Move
+                    if (this.board[moveX][moveY] == null) {
                         returnArray.push([moveX, moveY]);
-                    }
-                }
-            }
-
-        // Trace of Rook, Bishop, Queen
-        } else {
-            const moveSet = piece.getPossibleMoves();
-            if (Object.keys(moveSet).length >= 0) {
-                for (const [_, moves] of Object.entries(moveSet)) {
-                    for (const [moveX, moveY] of moves as [number, number][]) {
-                        //Empty Square -> allowed Move
-                        if (this.board[moveX][moveY] == null) {
+                    } else {
+                        // Different Color -> allowed take
+                        if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
                             returnArray.push([moveX, moveY]);
-                        } else {
-                            //Diffrent Color -> allowed take
-                            if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
-                                returnArray.push([moveX, moveY]);
-                            }
-                            break;
                         }
+                        break;
                     }
                 }
             }
-        }
+        };
+
         return returnArray;
     }
 
     public isValidMove(x: number, y: number, endX: number, endY: number, playerColor: PieceColor | null): boolean {
-        const allowedMoveset: number[][] = this.getTrace(x,y);
+        if (!Piece.isInBounds(x, y)) { return false };
+
+        const allowedMoveset: number[][] = this.getTrace(x as BoardIndex, y as BoardIndex);
         const piece = this.board[x][y]
 
         if (this.turn == piece?.color && this.turn == playerColor) {
