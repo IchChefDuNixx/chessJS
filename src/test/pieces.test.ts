@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from '../server/Pieces';
+import Bishop from "../server/Pieces/Bishop";
+import King from "../server/Pieces/King";
+import Knight from "../server/Pieces/Knight";
+import Pawn from "../server/Pieces/Pawn";
+import Piece from "../server/Pieces/Piece";
+import Queen from "../server/Pieces/Queen";
+import Rook from "../server/Pieces/Rook";
 
 
 describe("piece initialization", () => {
@@ -35,13 +41,13 @@ describe("piece initialization", () => {
         expect(rook.getType()).toBe("rook");
     });
     it("creates a custom piece", () => {
-        const piece1 = new Piece({ X: 0, Y: 0, type: "king", color: "b", hasMoved: true});
+        const piece1 = new King({ X: 0, Y: 0, color: "b" });
         expect(Piece.isInBounds(piece1.X, piece1.Y)).toBe(true);
-        const piece2 = new Piece({ X: 8, Y: 0, type: "king", color: "b", hasMoved: true});
+        const piece2 = new King({ X: 8, Y: 0, color: "b" });
         expect(Piece.isInBounds(piece2.X, piece2.Y)).toBe(false);
-        const piece3 = new Piece({ X: 0, Y: 8, type: "king", color: "b", hasMoved: true});
+        const piece3 = new King({ X: 0, Y: 8, color: "b" });
         expect(Piece.isInBounds(piece3.X, piece3.Y)).toBe(false);
-        const piece4 = new Piece({ X: 8, Y: 8, type: "king", color: "b", hasMoved: true});
+        const piece4 = new King({ X: 8, Y: 8, color: "b" });
         expect(Piece.isInBounds(piece4.X, piece4.Y)).toBe(false);
     });
 });
