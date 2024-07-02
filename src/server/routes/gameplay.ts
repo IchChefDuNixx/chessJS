@@ -28,9 +28,9 @@ router.post("/validate_move", (req: Request, res: Response): void => {
 
         if (currGame.isValidMove(oldX, oldY, newX, newY, playerColor)) {
             currGame.movePiece(oldX, oldY, newX, newY);
-            res.status(200).send({ isValid: true, gameOver: currGame.getIsKingTaken()});
+            res.status(200).send({ isValid: true, gameOver: currGame.getIsKingTaken() });
         } else {
-            res.status(200).send({ isValid: false, gameOver: false});
+            res.status(200).send({ isValid: false, gameOver: currGame.getIsKingTaken() });
         }
         return;
     } catch {

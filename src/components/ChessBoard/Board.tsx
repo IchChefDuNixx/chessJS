@@ -56,27 +56,32 @@ function Board({ loginRequired = false }: BoardProps) {
     useEffect(() => {
         if (loginRequired) {
             setBoard(lastJsonMessage?.board || initialBoard);
-            console.log(lastJsonMessage);
             if (lastJsonMessage?.gameOver) {
-                // TODO: make more smooth
-                alert("The game has concluded!");
-                navigate("/home");
+                handleGameOver();
             }
         }
     }, [lastJsonMessage, loginRequired]);
+
+    // TODO: make more smooth
+    const handleGameOver = (): void => {
+        handleRestartGame();
+        alert("The game has concluded!");
+        navigate("/home");
+    };
 
     const handleMove = (start: number, end: number): void => {
         const username = sessionStorage.username;
 
         axios.post("/api/gameplay/validate_move", { start, end, isOnline: loginRequired, username })
-        .then((response) => {
-            const isValidMove: boolean = response.data.isValid;
-            const gameOver: boolean = response.data.gameOver;
-            if (isValidMove) {
-                execute_move(start, end, gameOver);
+            .then((response) => {
+                const isValidMove: boolean = response.data.isValid;
+                const gameOver: boolean = response.data.gameOver;
+                if (isValidMove) {
+                    execute_move(start, end, gameOver);
                 }
-            })
-            .catch(() => console.log("Something went wrong in handleMove()"));
+            }).catch(() => {
+                console.log("Something went wrong in handleMove()");
+            });
     };
 
     const execute_move = (start: number, end: number, gameOver: boolean): void => {
@@ -96,7 +101,12 @@ function Board({ loginRequired = false }: BoardProps) {
             setShowAnimation(false);
         }, 500);
 
-        loginRequired ? sendJsonMessage({ board: newBoard, gameOver }) : setBoard(newBoard);
+        if (loginRequired) {
+            sendJsonMessage({ board: newBoard, gameOver });
+        } else {
+            setBoard(newBoard);
+            gameOver && handleGameOver(); // short-circuit evaluation
+        }
     };
 
     // Local only
