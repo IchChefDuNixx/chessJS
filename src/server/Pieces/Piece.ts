@@ -60,7 +60,7 @@ abstract class Piece {
             "right": []
         };
         const maxSteps = Math.min(Math.max(Math.floor(steps), 0), 8); // maxSteps in [0, 8]
-        for (let i = 1; i < maxSteps; i++) {
+        for (let i = 1; i <= maxSteps; i++) {
             if (Piece.isInBounds(x + i, y)) {moveSet["right"].push([x + i as BoardIndex, y])};
             if (Piece.isInBounds(x - i, y)) {moveSet["left"].push([x - i as BoardIndex, y])};
             if (Piece.isInBounds(x, y + i)) {moveSet["up"].push([x, y + i as BoardIndex])};
@@ -77,7 +77,7 @@ abstract class Piece {
             "down-right": []
         };
         const maxSteps = Math.min(Math.max(Math.floor(steps), 0), 8); // maxSteps in [0, 8]
-        for (let i = 1; i < maxSteps; i++) {
+        for (let i = 1; i <= maxSteps; i++) {
             if (Piece.isInBounds(x + i, y + i)) {moveSet["up-right"].push([x + i as BoardIndex, y + i as BoardIndex])};
             if (Piece.isInBounds(x - i, y + i)) {moveSet["up-left"].push([x - i as BoardIndex, y + i as BoardIndex])};
             if (Piece.isInBounds(x + i, y - i)) {moveSet["down-right"].push([x + i as BoardIndex, y - i as BoardIndex])};

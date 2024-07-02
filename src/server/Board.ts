@@ -11,10 +11,12 @@ import Rook from "./Pieces/Rook";
 class Board {
     private board: (Piece | null)[][];
     private turn: PieceColor;
+    private isKingTaken: boolean;
 
     constructor() {
         this.board = this.createInitialBoard();
         this.turn = 'w'
+        this.isKingTaken = false
     }
 
     private createInitialBoard(): (Piece | null)[][] {
@@ -79,6 +81,7 @@ class Board {
     public resetBoard(): void {
         this.board = this.createInitialBoard();
         this.turn = "w";
+        this.isKingTaken = false;
     }
 
     private changeTurn(): void {
@@ -87,6 +90,14 @@ class Board {
 
     public getTurn(): PieceColor {
         return this.turn;
+    }
+
+    public getIsKingTaken(): boolean{
+        return this.isKingTaken;
+    }
+
+    public setIsKingTaken(): void{
+        this.isKingTaken = true;
     }
 
     // Calculating the squares a given piece could move
@@ -164,7 +175,7 @@ class Board {
         }
         return returnArray
     }
-
+    
     // public isCheckWhite(): boolean {
     //     const whiteKingPosition = this.getKingPosition('w');
 
@@ -186,6 +197,11 @@ class Board {
         if (piece) {
             // Remove the piece from its original position
             this.board[startX][startY] = null;
+
+            if(this.board[endX][endY]?.getType() == 'king'){
+                this.setIsKingTaken();
+            }
+
             // Update the piece's position
             piece.X = endX;
             piece.Y = endY;
