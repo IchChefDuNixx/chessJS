@@ -109,7 +109,6 @@ function Board({ loginRequired = false }: BoardProps) {
         }
     };
 
-    // Local only
     const handleRestartGame = (): void => {
         axios.post("/api/gameplay/restart_game", { isOnline: false })
             .then(() => {

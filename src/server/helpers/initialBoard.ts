@@ -13,4 +13,6 @@ function getInitialBoard(): string[] {
     return [...initialBoard];
 }
 
-export { getInitialBoard };
+const currentBoard = getInitialBoard();
+
+export { currentBoard, getInitialBoard };

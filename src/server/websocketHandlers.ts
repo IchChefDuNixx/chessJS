@@ -5,6 +5,7 @@ import { WebSocket } from "ws";
 
 import Players, { players } from "./helpers/Players";
 import Role, { Roles } from "./helpers/Role";
+import { getInitialBoard } from "./helpers/initialBoard";
 
 
 function parseUsername(req: IncomingMessage) : string {
@@ -49,7 +50,7 @@ function handleConnection(username: string, connection: WebSocket, players: Play
     console.log(`player ${username} (${Role[roles[username]]}) joined`);
 };
 
-function handleMessage(message: string, players: Players, currentBoard: string[]): string[] {
+function handleMessage(message: string, players: Players, roles: Roles, currentBoard: string[]): void {
     const dataFromClient = JSON.parse(message);
     currentBoard = dataFromClient.board;
     const gameOver = dataFromClient.gameOver ? true : false;
@@ -61,7 +62,9 @@ function handleMessage(message: string, players: Players, currentBoard: string[]
         spectator.connection.send(data);
     };
 
-    return currentBoard;
+    if (gameOver) {
+        currentBoard.splice(0, 64,...getInitialBoard());
+    }
 };
 
 function handleClose(username: string, players: Players, roles: Roles): void {

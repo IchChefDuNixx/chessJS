@@ -3,7 +3,7 @@ import express, { Request, Response } from "express"
 import ViteExpress from "vite-express";
 import { WebSocketServer } from "ws";
 
-import { getInitialBoard } from "./helpers/initialBoard.ts";
+import { getInitialBoard, currentBoard } from "./helpers/initialBoard.ts";
 import { getInitialPlayers, players } from "./helpers/Players.ts";
 import { getInitialRoles, roles } from "./helpers/Role.ts";
 import gameRouter from "./routes/games.ts";
@@ -32,7 +32,7 @@ ViteExpress.listen(app, 5173, () => {
 });
 
 
-let currentBoard = getInitialBoard();
+// let currentBoard = getInitialBoard();
 // let players = getInitialPlayers();
 // let roles = getInitialRoles();
 
@@ -53,7 +53,7 @@ wss.on("connection", (connection, req) => {
     handleConnection(username, connection, players, roles, currentBoard);
 
     connection.on("message", (message: string) => {
-        currentBoard = handleMessage(message, players, currentBoard);
+        handleMessage(message, players, roles, currentBoard);
     });
 
     connection.on("close", () => {

@@ -15,8 +15,8 @@ class Board {
 
     constructor() {
         this.board = this.createInitialBoard();
-        this.turn = 'w'
-        this.isKingTaken = false
+        this.turn = 'w';
+        this.isKingTaken = false;
     }
 
     private createInitialBoard(): (Piece | null)[][] {
@@ -92,11 +92,11 @@ class Board {
         return this.turn;
     }
 
-    public getIsKingTaken(): boolean{
+    public getIsKingTaken(): boolean {
         return this.isKingTaken;
     }
 
-    public setIsKingTaken(): void{
+    public setIsKingTaken(): void {
         this.isKingTaken = true;
     }
 
@@ -131,13 +131,14 @@ class Board {
             for (const [_, moves] of Object.entries(moveSet)) {
                 for (const [moveX, moveY] of moves as [BoardIndex, BoardIndex][]) {
                     // Empty Square -> allowed Move
-                    if (this.board[moveX][moveY] == null) {
+                    if (this.board[moveX][moveY] === null) {
                         returnArray.push([moveX, moveY]);
-                    } else {
-                        // Different Color -> allowed take
-                        if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
-                            returnArray.push([moveX, moveY]);
-                        }
+                    // pawn can ONLY move to empty squares
+                    } else if (piece.getType() === "pawn") {
+                        break;
+                    // Different Color -> allowed take
+                    } else if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
+                        returnArray.push([moveX, moveY]);
                         break;
                     }
                 }
@@ -168,14 +169,14 @@ class Board {
         const returnArray: number[][] = [];
         for (let x = 0; x <= 7; x++){
             for (let y = 0; y <= 7; y++){
-                if(this.board[x][y]?.getType() === 'king' && this.board[x][y]?.getColor() === color){
+                if (this.board[x][y]?.getType() === 'king' && this.board[x][y]?.getColor() === color){
                     return [[x,y]];
                 }
             }
         }
-        return returnArray
+        return returnArray;
     }
-    
+
     // public isCheckWhite(): boolean {
     //     const whiteKingPosition = this.getKingPosition('w');
 
@@ -190,15 +191,13 @@ class Board {
     //     return false;
     // }
 
-    // TODO: find and set true/false kingTaken in class
-    // res.status(200).send({ isValid: true, gameOver: currGame.getIsKingTaken()});
     public movePiece(startX: BoardIndex, startY: BoardIndex, endX: BoardIndex, endY: BoardIndex): void {
         const piece = this.board[startX][startY];
         if (piece) {
             // Remove the piece from its original position
             this.board[startX][startY] = null;
 
-            if(this.board[endX][endY]?.getType() == 'king'){
+            if(this.board[endX][endY]?.getType() == 'king') {
                 this.setIsKingTaken();
             }
 
