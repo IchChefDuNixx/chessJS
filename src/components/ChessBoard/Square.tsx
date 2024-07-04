@@ -55,6 +55,7 @@ function Square({ black, position, handleMove, highlightMoves, children } : Prop
             first = null;
             second = null;
         }
+        highlightMoves([]); // removes move highlights
     };
 
     const handleOnMouseLeave = (e: React.MouseEvent): void => {

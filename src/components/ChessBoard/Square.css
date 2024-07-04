@@ -4,7 +4,7 @@
 }
 
 .square.beige {
-    background-color: rgb(236, 207, 169);
+    background-color: #eccfa9;
 }
 
 .square.brown {
@@ -20,11 +20,11 @@
 }
 
 .square.beige.holding {
-    background-color: yellowgreen;
+    background-color: #eb5074f9;
 }
 
 .square.brown.holding {
-    background-color: yellowgreen;
+    background-color: #eb5074f9;
 }
 
 .square.beige.hovering {
@@ -36,9 +36,28 @@
 }
 
 .square.beige.selected {
-    background-color: rgb(208, 0, 255);
+    /*background-color: #eccfa97b;
+    border-color: #F194B4;
+    border-style: solid;*/
+
+    border: 5px solid transparent;
+            
+    /* Gradient border */
+    border-image: linear-gradient(45deg, #eccfa9, #eb5074);
+    border-image-slice: 1;
 }
 
 .square.brown.selected {
-    background-color: blue;
+    /*background-color: #216f7d7f;
+    border-color: #A0DDFF;
+    border-style: solid;*/
+
+    /* Set initial border color and width */
+    border: 5px solid transparent;
+            
+    /* Gradient border */
+    border-image: linear-gradient(45deg, #eb5074, #216f7d7f);
+    border-image-slice: 1;
+    
+    
 }
