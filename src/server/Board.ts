@@ -137,8 +137,10 @@ class Board {
                     } else if (piece.getType() === "pawn") {
                         break;
                     // Different Color -> allowed take
-                    } else if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
-                        returnArray.push([moveX, moveY]);
+                    } else {
+                        if (this.board[moveX][moveY].getColor() !== piece.getColor()) {
+                            returnArray.push([moveX, moveY]);
+                        }
                         break;
                     }
                 }
