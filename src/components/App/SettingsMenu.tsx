@@ -1,11 +1,17 @@
 import axios from 'axios';
-import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography } from '@mui/material';
+import { Box, Divider, FormControlLabel, FormGroup, Slider, Switch, Typography, ThemeProvider, createTheme } from '@mui/material';
 import { ChangeEvent, useContext, useState } from 'react';
 
 import { Settings, SettingsContext } from './App';
-
 import { UserSettings } from '../../server/prisma/model.types';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#EB5074',
+    },
+  },
+});
 
 function convertSettingsFormat(settings: Settings): UserSettings {
   return { 
@@ -67,55 +73,56 @@ function SettingsMenu() {
       });
   };
 
-
   return(
-    <Box minWidth={300}>
-      <FormGroup>
-        <FormControlLabel control={
-          <Switch
-            checked={settings.showTooltips}
-            onChange={e => handleSwitchChange("showTooltips", e)}
-          />}
-          label="Show Tooltips"
-        />
-        <FormControlLabel control={
-          <Switch
-            checked={settings.darkMode}
-            onChange={e => handleSwitchChange("darkMode", e)}
-          />}
-          label="Dark Mode"
-        />
-      </FormGroup>
-      <Divider />
-      <Typography> Gender </Typography>
-      <Slider
-        value={gender}
-        min={0}
-        max={300}
-        step={0.01}
-        onChange={(_, newValues) => updateGenderValue(newValues)}
-        onChangeCommitted={(_, newValues) => handleSliderChange("gender", newValues)}
-        marks={[
-          { value: 100, label: "Female" },
-          { value: 200, label: "Male"}
-        ]}
-        color='secondary'
-      />
-      <Box sx={{ height: 200 }}>
+    <ThemeProvider theme={theme}>
+      <Box minWidth={300}>
+        <FormGroup>
+          <FormControlLabel control={
+            <Switch
+              checked={settings.showTooltips}
+              onChange={e => handleSwitchChange("showTooltips", e)}
+            />}
+            label="Show Tooltips"
+          />
+          <FormControlLabel control={
+            <Switch
+              checked={settings.darkMode}
+              onChange={e => handleSwitchChange("darkMode", e)}
+            />}
+            label="Dark Mode"
+          />
+        </FormGroup>
+        <Divider />
+        <Typography> Gender </Typography>
         <Slider
-          value={human}
+          value={gender}
           min={0}
-          max={100}
-          step={0.001}
-          onChange={(_, newValue) => updateHumanValue(newValue)}
-          onChangeCommitted={(_, newValue) => handleSliderChange("human", newValue)}
-          color='secondary'
-          orientation='vertical'
-          valueLabelDisplay='auto'
+          max={300}
+          step={0.01}
+          onChange={(_, newValues) => updateGenderValue(newValues)}
+          onChangeCommitted={(_, newValues) => handleSliderChange("gender", newValues)}
+          marks={[
+            { value: 100, label: "Female" },
+            { value: 200, label: "Male"}
+          ]}
+          color='primary'
         />
-        <Typography> Human % </Typography>
+        <Box sx={{ height: 200 }}>
+          <Slider
+            value={human}
+            min={0}
+            max={100}
+            step={0.001}
+            onChange={(_, newValue) => updateHumanValue(newValue)}
+            onChangeCommitted={(_, newValue) => handleSliderChange("human", newValue)}
+            color='primary'
+            orientation='vertical'
+            valueLabelDisplay='auto'
+          />
+          <Typography> Human % </Typography>
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 }
 
